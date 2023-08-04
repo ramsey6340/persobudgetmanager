@@ -24,6 +24,9 @@ public class Budget {
     @NotNull(message = "")
     private Long alertAmount; // le montant à partir duquel on doit alerter l'utilisateur si son buget atteint cette somme. Exemple: Si le montant du budget est 100.000 FCFA, il peut dire de lui alerté si cette somme atteint 10.000 FCFA, donc le alertAmount sera 10.000 FCFA et amount sera 100.000 FCFA
 
+    @Column(name = "titre")
+    private String title;
+
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
     private User user;

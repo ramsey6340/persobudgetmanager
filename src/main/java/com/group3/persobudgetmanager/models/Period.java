@@ -21,4 +21,8 @@ public class Period {
     private String title; // Titre du type de period. Exemple : quotidiennes, hebdomadaires ou mensuelles
 
     private String description; // une description pour le type de période
+
+    @ManyToOne
+    @JoinColumn(name = "utilisateur_id")
+    private User user;
 }
