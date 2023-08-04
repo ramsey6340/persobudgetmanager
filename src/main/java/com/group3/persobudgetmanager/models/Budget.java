@@ -2,9 +2,17 @@ package com.group3.persobudgetmanager.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "budget")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Budget {
     /**
      * La classe Budget répresente le budget de l'utilisateur pour différentes catégories de dépenses.

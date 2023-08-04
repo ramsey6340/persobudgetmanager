@@ -3,9 +3,17 @@ package com.group3.persobudgetmanager.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "periode")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Period {
     /**
      * La classe PeriodType répresente la période de temps. Exemple : Quotidienne, Hebdommandaire, Mensuelle

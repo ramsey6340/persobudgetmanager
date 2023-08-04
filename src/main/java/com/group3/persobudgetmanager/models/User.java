@@ -3,9 +3,17 @@ package com.group3.persobudgetmanager.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "utilisateur")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     /**
      * La classe User est la classe qui répresente l'utilisateur qui utilisera l'API.
