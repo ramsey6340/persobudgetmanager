@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Period {
     /**
-     * La classe PeriodType répresente la période de temps. Exemple : Quotidienne, Hebdommandaire, Mensuelle
+     * La classe Period répresente la période de temps. Exemple : Quotidienne, Hebdommandaire, Mensuelle
      */
 
     @Id
@@ -27,8 +27,10 @@ public class Period {
     @NotNull(message = "")
     @Size(min = 2, max = 30)
     private String title; // Titre du type de period. Exemple : quotidiennes, hebdomadaires ou mensuelles
-
+    @Column(name = "description", nullable = false)
     private String description; // une description pour le type de période
+    @Column(name = "nb_jour", nullable = false)
+    private Long nbJour;
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
