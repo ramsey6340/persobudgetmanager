@@ -18,7 +18,8 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "contenue", nullable = false)
+    @Column(name = "contenue")
+    @NotNull(message = "")
     private String content;
 
     @ManyToOne
