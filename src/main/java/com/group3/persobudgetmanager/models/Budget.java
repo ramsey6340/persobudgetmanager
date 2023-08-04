@@ -26,7 +26,7 @@ public class Budget {
 
     @Column(name = "montant")
     @NotNull(message = "")
-    private Long amount; // le montant du budget
+    private Double amount; // le montant du budget
 
     @Column(name = "montant_alert")
     @NotNull(message = "")
