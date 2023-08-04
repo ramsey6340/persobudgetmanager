@@ -2,8 +2,12 @@ package com.group3.persobudgetmanager.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "budget")
 public class Budget {
     /**
