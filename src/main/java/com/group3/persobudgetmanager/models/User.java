@@ -7,15 +7,21 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+<<<<<<< HEAD
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
+=======
+>>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 
 @Entity
 @Data
 @NoArgsConstructor
+<<<<<<< HEAD
 @DynamicUpdate
+=======
+>>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 @Table(name = "utilisateur")
 public class User {
     /**
