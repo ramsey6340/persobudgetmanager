@@ -12,9 +12,7 @@ import java.util.Optional;
 public class PeriodService {
     @Autowired
     private PeriodRepository periodRepository;
-    public PeriodService(PeriodRepository periodRepository){
-        this.periodRepository = periodRepository;
-    }
+
     // La méthode retournant une période correspondant à un utilisateur
     Optional<Period> findByIdAndUserId(Long id, Long userId){
         return periodRepository.findByIdAndUserId(id, userId);

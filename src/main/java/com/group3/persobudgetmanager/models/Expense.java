@@ -27,7 +27,7 @@ public class Expense {
 
     @Column(name = "montant")
     @NotNull(message = "")
-    private Long amount; // le montant de la dépense
+    private double amount; // le montant de la dépense
 
     @Size(min = 1, max = 200, message = "{Size.expense.note}")
     private String note; // Ajouter une note pour la dépense. Exemple : Cette a été fait pour arranger un ami

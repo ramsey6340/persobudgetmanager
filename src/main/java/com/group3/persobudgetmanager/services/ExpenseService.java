@@ -14,11 +14,11 @@ import java.util.Optional;
 @Transactional
 public class ExpenseService {
     @Autowired
-    private final ExpenseRepository expenseRepository;
-
-    public ExpenseService(ExpenseRepository expenseRepository) {
-        this.expenseRepository = expenseRepository;
+    private ExpenseRepository expenseRepository;
+    public boolean existsById(Long id) {
+        return expenseRepository.existsById(id);
     }
+
     //la méthode du service pour ajouter une nouvelle dépense
     public Expense save(Expense expense){
         return expenseRepository.save(expense);
@@ -29,7 +29,13 @@ public class ExpenseService {
     }
   //la méthode du service pour modifier une dépense
     public Expense update(Expense expense){
+        boolean b = false;
+        b = expenseRepository.existsById(expense.getId());
+        if (b==true){
         return expenseRepository.save(expense);
+    }else{
+        return new Expense();
+        }
     }
     //la méthode du service pour chercher une dépense
     public Optional<Expense> findById(Long id){
@@ -38,14 +44,14 @@ public class ExpenseService {
     // la méthode retournant la liste des dépenses
     public List<Expense> findAll(){
       return expenseRepository.findAll();
-  }
-    List<Expense> findAllByAmount(double montant){
+    }
+    public List<Expense> findAllByAmount(double montant){
         return expenseRepository.findAllByAmount(montant);
     }
-    List<Expense> findAllByCreationDate(LocalDate date){
+    public List<Expense> findAllByCreationDate(LocalDate date){
         return expenseRepository.findAllByCreationDate(date);
     }
-    List<Expense> findAllByUserId(Long id){
+    public List<Expense> findAllByUserId(Long id){
         return expenseRepository.findAllByUserId(id);
     }
     List<Expense> findAllByBudgetId(Long id){
@@ -60,22 +66,22 @@ public class ExpenseService {
     List<Expense> findAllByUserIdAndBudgetId(Long userId, Long budgetId){
         return expenseRepository.findAllByUserIdAndBudgetId(userId, budgetId);
     }
-    List<Expense> findAllByPeriodIdAndUserIdAndBudgetId(Long id, Long userId, Long budgetId){
+    public List<Expense> findAllByPeriodIdAndUserIdAndBudgetId(Long id, Long userId, Long budgetId){
         return expenseRepository.findAllByPeriodIdAndUserIdAndBudgetId(id, userId, budgetId);
     }
-    List<Expense> findAllByPeriodIdAndBudgetId(Long id, Long budgetId){
+    public List<Expense> findAllByPeriodIdAndBudgetId(Long id, Long budgetId){
         return expenseRepository.findAllByPeriodIdAndBudgetId(id, budgetId);
     }
-    Optional<Expense> findByIdAndUserIdAndBudgetId(Long id, Long userId, Long budgetId){
+    public Optional<Expense> findByIdAndUserIdAndBudgetId(Long id, Long userId, Long budgetId){
         return expenseRepository.findByIdAndUserIdAndBudgetId(id, userId, budgetId);
     }
-    Optional<Expense> findByIdAndUserId(Long id, Long userId){
+    public Optional<Expense> findByIdAndUserId(Long id, Long userId){
         return expenseRepository.findByIdAndUserId(id, userId);
     }
-    Optional<Expense> findByIdAndUserIdAndPeriodId(Long id, Long userId, Long periodId){
+    public Optional<Expense> findByIdAndUserIdAndPeriodId(Long id, Long userId, Long periodId){
         return expenseRepository.findByIdAndUserIdAndPeriodId(id, userId, periodId);
     }
-    Optional<Expense> findByIdAndUserIdAndBudgetIdAndPeriodId(Long id, Long userId, Long budgetId, Long periodId){
+    public Optional<Expense> findByIdAndUserIdAndBudgetIdAndPeriodId(Long id, Long userId, Long budgetId, Long periodId){
         return expenseRepository.findByIdAndUserIdAndBudgetIdAndPeriodId(id, userId, budgetId, periodId);
     }
 
