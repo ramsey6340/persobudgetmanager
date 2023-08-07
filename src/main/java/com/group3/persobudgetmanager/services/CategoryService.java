@@ -28,8 +28,8 @@ public class CategoryService {
     public ResponseEntity<Object> createCategoryForUser(Long userId, Category category) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()){
-            Optional<Category> categoryExist = categoryRepository.findByTitle(category.getTitle());
-            if (categoryExist.isEmpty()){ // Si une catégorie du même nom n'existe pas on peut créer la catégorie
+            Optional<Category> categoryExist = categoryRepository.findByTitleAndDeleteFalse(category.getTitle());
+            if (categoryExist.isEmpty()){ // Si une catégorie du même nom n'existe pas, on peut créer la catégorie
                 category.setUser(user.get());
                 categoryRepository.save(category);
                 URI location = ServletUriComponentsBuilder
@@ -50,11 +50,11 @@ public class CategoryService {
     }
 
     public List<Category> getCategoriesByUser(Long userId) {
-        return categoryRepository.findAllByUserId(userId);
+        return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
     }
 
     public ResponseEntity<Object> getCategory(Long userId, Long categoryId) {
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
+        Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
         if (category.isPresent()){
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         }
@@ -64,25 +64,26 @@ public class CategoryService {
     }
 
     public List<Category> getCategoriesByTitleAndUserId(Long userId, String title) {
-        return categoryRepository.findAllByUserIdAndTitleContaining(userId, title);
+        return categoryRepository.findAllByUserIdAndTitleContainingAndDeleteFalse(userId, title);
     }
 
     public List<Category> getCategoriesByDescriptionAndUserId(Long userId, String description) {
-        return categoryRepository.findAllByUserIdAndDescriptionContaining(userId, description);
+        return categoryRepository.findAllByUserIdAndDescriptionContainingAndDeleteFalse(userId, description);
     }
 
     public List<Category> getCategoriesByTitle(String title) {
-        return categoryRepository.findAllByTitleContaining(title);
+        return categoryRepository.findAllByTitleContainingAndDeleteFalse(title);
     }
 
     public List<Category> getCategoriesByDescription(String description) {
-        return categoryRepository.findAllByDescriptionContaining(description);
+        return categoryRepository.findAllByDescriptionContainingAndDeleteFalse(description);
     }
 
     public ResponseEntity<Object> deleteCategoryByUserId(Long userId, Long categoryId) {
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
-        if (category.isPresent()) {
-            categoryRepository.delete(category.get());
+        Optional<Category> categoryOptional = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
+        if (categoryOptional.isPresent()) {
+            categoryOptional.get().setDelete(true);
+            categoryRepository.save(categoryOptional.get());
             return ResponseEntity.ok("Suppression reussi");
         }
         else {
@@ -91,7 +92,7 @@ public class CategoryService {
     }
 
     public ResponseEntity<Object> updateCategoryByUserIdWithPut(Long userId, Long categoryId, Category newCategory) {
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
+        Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
         if (category.isPresent()){
             Category existingCategory = category.get();
 
@@ -106,7 +107,7 @@ public class CategoryService {
     }
 
     public ResponseEntity<Object> updateCategoryByUserIdWithPatch(Long userId, Long categoryId, Map<String, String> partialDate) {
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
+        Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
         if (category.isEmpty()){
             return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
         }
