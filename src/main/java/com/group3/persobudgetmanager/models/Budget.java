@@ -35,10 +35,10 @@ public class Budget {
     @Column(name = "titre")
     private String title;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "utilisateur_id")
     private User user;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categorie_id")
     private Category category;
 }

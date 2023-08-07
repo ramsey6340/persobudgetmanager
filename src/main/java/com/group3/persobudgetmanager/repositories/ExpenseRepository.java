@@ -3,6 +3,7 @@ package com.group3.persobudgetmanager.repositories;
 import com.group3.persobudgetmanager.models.Expense;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -37,4 +38,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Optional<Expense> findByIdAndUserIdAndPeriodId(Long id, Long userId, Long periodId);
     // La méthode retournant la liste des depenses correspondant à un utilisateur, un budget et un période
     Optional<Expense> findByIdAndUserIdAndBudgetIdAndPeriodId(Long id, Long userId, Long budgetId, Long periodId);
+
+    void deleteByIdAndUserId(Long expenseId, Long userId);
+    List<Expense> findByUserIdOrAmountOrNoteContaining(Long userId, Double amount, String note);
 }
