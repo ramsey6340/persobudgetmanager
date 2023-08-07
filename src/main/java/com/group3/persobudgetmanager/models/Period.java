@@ -8,17 +8,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-<<<<<<< HEAD
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Data
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
-=======
-
-@Entity
-@Data
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 @NoArgsConstructor
 @Table(name = "periode")
 public class Period {

@@ -3,7 +3,6 @@ package com.group3.persobudgetmanager.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-<<<<<<< HEAD
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,13 +11,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @Data
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
-=======
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Entity
-@Data
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 @NoArgsConstructor
 @Table(name = "budget")
 public class Budget {

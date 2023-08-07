@@ -7,21 +7,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-<<<<<<< HEAD
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
-=======
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 
 @Entity
 @Data
 @NoArgsConstructor
-<<<<<<< HEAD
 @DynamicUpdate
-=======
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 @Table(name = "utilisateur")
 public class User {
     /**
@@ -55,18 +49,23 @@ public class User {
     @JsonIgnore
     private boolean delete=false;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Period> periods = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Expense> expenses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Category> categories = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Budget> budgets = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Notification> notifications = new ArrayList<>();
 }

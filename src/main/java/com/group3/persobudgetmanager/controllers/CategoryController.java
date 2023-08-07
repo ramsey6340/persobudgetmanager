@@ -34,29 +34,18 @@ public class CategoryController {
         return categoryService.getCategory(userId, categoryId);
     }
 
-    @Operation(summary = "Obternir les catégories d'un utilisateur par son titre")
-    @GetMapping(value = "users/{userId}/categories", params = "title")
-    public List<Category> getCategoriesByTitleAndUserId(@PathVariable Long userId, @RequestParam("title") String title) {
-        return categoryService.getCategoriesByTitleAndUserId(userId, title);
-    }
-
     @Operation(summary = "Obternir les catégories d'un utilisateur par sa description")
     @GetMapping(value = "users/{userId}/categories", params = "description")
-    public List<Category> getCategoriesByDescriptionAndUserId(@PathVariable Long userId, @RequestParam("description") String description) {
+    public List<Category> getCategoriesByUserIdAndDescriptionContaining(@PathVariable Long userId, @RequestParam("description") String description) {
         return categoryService.getCategoriesByDescriptionAndUserId(userId, description);
     }
 
     @Operation(summary = "Obternir les catégories par son titre")
-    @GetMapping(value = "categories", params = "title")
-    public List<Category> getCategoriesByTitle(@RequestParam("title") String title) {
-        return categoryService.getCategoriesByTitle(title);
+    @GetMapping(value = "users/{userId}/categories", params = "title")
+    public List<Category> getCategoriesByUserIdAndTitleContaining(@PathVariable Long userId, @RequestParam("title") String title) {
+        return categoryService.getCategoriesByUserIdAndTitleContaining(userId, title);
     }
 
-    @Operation(summary = "Obternir les catégories par sa description")
-    @GetMapping(value = "categories", params = "description")
-    public List<Category> getCategoriesByDescription(@RequestParam("description") String description) {
-        return categoryService.getCategoriesByDescription(description);
-    }
 
     @Operation(summary = "Supprimer une catégorie d'un utilisateur")
     @DeleteMapping("users/{userId}/categories/{categoryId}")

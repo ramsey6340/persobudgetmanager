@@ -28,13 +28,9 @@ public class CategoryService {
     public ResponseEntity<Object> createCategoryForUser(Long userId, Category category) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()){
-<<<<<<< HEAD
-            Optional<Category> categoryExist = categoryRepository.findByTitleAndDeleteFalse(category.getTitle());
+            Optional<Category> categoryExist = categoryRepository.findByUserIdAndTitleAndDeleteFalse(userId, category.getTitle());
             if (categoryExist.isEmpty()){ // Si une catégorie du même nom n'existe pas, on peut créer la catégorie
-=======
-            Optional<Category> categoryExist = categoryRepository.findByTitle(category.getTitle());
-            if (categoryExist.isEmpty()){ // Si une catégorie du même nom n'existe pas on peut créer la catégorie
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
+
                 category.setUser(user.get());
                 categoryRepository.save(category);
                 URI location = ServletUriComponentsBuilder
@@ -55,19 +51,11 @@ public class CategoryService {
     }
 
     public List<Category> getCategoriesByUser(Long userId) {
-<<<<<<< HEAD
+
         return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
     }
-
     public ResponseEntity<Object> getCategory(Long userId, Long categoryId) {
         Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
-=======
-        return categoryRepository.findAllByUserId(userId);
-    }
-
-    public ResponseEntity<Object> getCategory(Long userId, Long categoryId) {
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
         if (category.isPresent()){
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         }
@@ -77,48 +65,22 @@ public class CategoryService {
     }
 
     public List<Category> getCategoriesByTitleAndUserId(Long userId, String title) {
-<<<<<<< HEAD
         return categoryRepository.findAllByUserIdAndTitleContainingAndDeleteFalse(userId, title);
     }
 
-    public List<Category> getCategoriesByDescriptionAndUserId(Long userId, String description) {
+    public List<Category> getCategoriesByUserIdAndDescriptionContaining(Long userId, String description) {
         return categoryRepository.findAllByUserIdAndDescriptionContainingAndDeleteFalse(userId, description);
     }
 
-    public List<Category> getCategoriesByTitle(String title) {
-        return categoryRepository.findAllByTitleContainingAndDeleteFalse(title);
+    public List<Category> getCategoriesByUserIdAndTitleContaining(Long userId, String title) {
+        return categoryRepository.findAllByUserIdAndTitleContainingAndDeleteFalse(userId, title);
     }
 
-    public List<Category> getCategoriesByDescription(String description) {
-        return categoryRepository.findAllByDescriptionContainingAndDeleteFalse(description);
-    }
 
     public ResponseEntity<Object> deleteCategoryByUserId(Long userId, Long categoryId) {
         Optional<Category> categoryOptional = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
         if (categoryOptional.isPresent()) {
             categoryOptional.get().setDelete(true);
-            categoryRepository.save(categoryOptional.get());
-=======
-        return categoryRepository.findAllByUserIdAndTitleContaining(userId, title);
-    }
-
-    public List<Category> getCategoriesByDescriptionAndUserId(Long userId, String description) {
-        return categoryRepository.findAllByUserIdAndDescriptionContaining(userId, description);
-    }
-
-    public List<Category> getCategoriesByTitle(String title) {
-        return categoryRepository.findAllByTitleContaining(title);
-    }
-
-    public List<Category> getCategoriesByDescription(String description) {
-        return categoryRepository.findAllByDescriptionContaining(description);
-    }
-
-    public ResponseEntity<Object> deleteCategoryByUserId(Long userId, Long categoryId) {
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
-        if (category.isPresent()) {
-            categoryRepository.delete(category.get());
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
             return ResponseEntity.ok("Suppression reussi");
         }
         else {
@@ -126,12 +88,14 @@ public class CategoryService {
         }
     }
 
+    public List<Category> getCategoriesByDescriptionAndUserId(Long userId, String description) {
+        return categoryRepository.findAllByUserIdAndDescriptionContainingAndDeleteFalse(userId, description);
+    }
+
+
     public ResponseEntity<Object> updateCategoryByUserIdWithPut(Long userId, Long categoryId, Category newCategory) {
-<<<<<<< HEAD
+
         Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
-=======
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
         if (category.isPresent()){
             Category existingCategory = category.get();
 
@@ -146,11 +110,9 @@ public class CategoryService {
     }
 
     public ResponseEntity<Object> updateCategoryByUserIdWithPatch(Long userId, Long categoryId, Map<String, String> partialDate) {
-<<<<<<< HEAD
+
         Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
-=======
-        Optional<Category> category = categoryRepository.findByIdAndUserId(categoryId, userId);
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
+
         if (category.isEmpty()){
             return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
         }

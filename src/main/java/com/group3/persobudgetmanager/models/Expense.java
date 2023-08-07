@@ -7,19 +7,13 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-<<<<<<< HEAD
 import org.hibernate.annotations.DynamicUpdate;
-=======
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 
 import java.time.LocalDate;
 
 @Entity
 @Data
-<<<<<<< HEAD
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
-=======
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
 @NoArgsConstructor
 @Table(name = "depense")
 public class Expense {
@@ -32,11 +26,7 @@ public class Expense {
     private Long id;
 
     @Column(name = "montant")
-<<<<<<< HEAD
     @NotNull(message = "{NotNull.expense.amount}")
-=======
-    @NotNull(message = "")
->>>>>>> 3539ee3538a406807aca0276a9021da8c17410b2
     private Double amount; // le montant de la dépense
 
     @Size(min = 2, max = 200, message = "{Size.expense.note}")
