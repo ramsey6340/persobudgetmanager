@@ -1,6 +1,6 @@
 package com.group3.persobudgetmanager.services;
 
-import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.CustomException;
 import com.group3.persobudgetmanager.models.Budget;
 import com.group3.persobudgetmanager.models.Notification;
 import com.group3.persobudgetmanager.models.User;
@@ -45,7 +45,7 @@ public class NotificationService {
             return ResponseEntity.created(location).body(notification);
         }
         else
-            return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
     }
 
     // Recuperer toutes les notifications d'un utilisateur pour un budget
@@ -59,7 +59,7 @@ public class NotificationService {
             return new ResponseEntity<>(notificationOptional.get(), HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -73,7 +73,7 @@ public class NotificationService {
             return new ResponseEntity<>(notificationOptional.get(), HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -85,7 +85,7 @@ public class NotificationService {
             return new ResponseEntity<>("Suppression reussi", HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
     }
 
     public List<Notification> getNotificationsByContentContaining(String contentKeyWord) {

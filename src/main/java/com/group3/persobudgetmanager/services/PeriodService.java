@@ -1,6 +1,6 @@
 package com.group3.persobudgetmanager.services;
 
-import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.CustomException;
 import com.group3.persobudgetmanager.models.Period;
 import com.group3.persobudgetmanager.models.User;
 import com.group3.persobudgetmanager.repositories.PeriodRepository;
@@ -35,7 +35,7 @@ public class PeriodService {
                     toUri();
             return ResponseEntity.created(location).body(periodCreated);
         }
-        return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
     }
 
     public List<Period> getPeriodsByUser(Long userId) {
@@ -62,7 +62,7 @@ public class PeriodService {
             Period updatePeriod = periodRepository.save(existingPeriod);
             return ResponseEntity.ok(updatePeriod);
         }
-        return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<Object> deletePeriodByUser(Long userId, Long periodId) {
@@ -71,7 +71,7 @@ public class PeriodService {
             periodRepository.delete(periodOptional.get());
             return new ResponseEntity<>("Suppression reussi", HttpStatus.OK);
         }
-        return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<Object> partialUpdateByUser(Long userId, Long periodId, Map<String, Object> periodMap) {
@@ -92,7 +92,7 @@ public class PeriodService {
             Period updatePeriod = periodRepository.save(existingPeriod);
             return new ResponseEntity<>(updatePeriod, HttpStatus.OK);
         }
-        return new ResponseEntity<>(ErrorMessage.notFound, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
     }
 
     public List<Period> getPeriodsByTitle(String tileKeyWord) {
