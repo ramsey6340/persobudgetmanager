@@ -1,6 +1,9 @@
 package com.group3.persobudgetmanager.services;
 
 import com.group3.persobudgetmanager.exceptions.CustomException;
+import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.NotFoundException;
+import com.group3.persobudgetmanager.exceptions.ResourceAlreadyExist;
 import com.group3.persobudgetmanager.models.Category;
 import com.group3.persobudgetmanager.models.User;
 import com.group3.persobudgetmanager.repositories.CategoryRepository;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.rmi.AlreadyBoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +29,7 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public ResponseEntity<Object> createCategoryForUser(Long userId, Category category) {
+    public ResponseEntity<Object> createCategoryForUser(Long userId, Category category){
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()){
             Optional<Category> categoryExist = categoryRepository.findByUserIdAndTitleAndDeleteFalse(userId, category.getTitle());
@@ -41,12 +45,13 @@ public class CategoryService {
                 return ResponseEntity.created(location).body(category);
             }
             else {
-                return new ResponseEntity<>(CustomException.resourceAlreadyExist(), HttpStatus.CONFLICT);
+                throw new ResourceAlreadyExist(ErrorMessage.alreadyExist);
             }
 
         }
         else {
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
+            //return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -60,7 +65,7 @@ public class CategoryService {
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -84,7 +89,7 @@ public class CategoryService {
             return ResponseEntity.ok("Suppression reussi");
         }
         else {
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -106,7 +111,7 @@ public class CategoryService {
             Category updateCategory = categoryRepository.save(existingCategory);
             return ResponseEntity.ok(updateCategory);
         }
-        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
+        throw new NotFoundException(ErrorMessage.notFound);
     }
 
     public ResponseEntity<Object> updateCategoryByUserIdWithPatch(Long userId, Long categoryId, Map<String, String> partialDate) {
@@ -114,8 +119,7 @@ public class CategoryService {
         Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
 
         if (category.isEmpty()){
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-        }
+            throw new NotFoundException(ErrorMessage.notFound);        }
 
         Category existingCategory = category.get();
 

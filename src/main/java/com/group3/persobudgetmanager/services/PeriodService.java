@@ -1,6 +1,8 @@
 package com.group3.persobudgetmanager.services;
 
 import com.group3.persobudgetmanager.exceptions.CustomException;
+import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.models.Period;
 import com.group3.persobudgetmanager.models.User;
 import com.group3.persobudgetmanager.repositories.PeriodRepository;
@@ -35,8 +37,7 @@ public class PeriodService {
                     toUri();
             return ResponseEntity.created(location).body(periodCreated);
         }
-        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-    }
+        throw new NotFoundException(ErrorMessage.notFound);    }
 
     public List<Period> getPeriodsByUser(Long userId) {
         return periodRepository.findAllByUserIdAndDeleteFalse(userId);
@@ -62,8 +63,7 @@ public class PeriodService {
             Period updatePeriod = periodRepository.save(existingPeriod);
             return ResponseEntity.ok(updatePeriod);
         }
-        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-    }
+        throw new NotFoundException(ErrorMessage.notFound);    }
 
     public ResponseEntity<Object> deletePeriodByUser(Long userId, Long periodId) {
         Optional<Period> periodOptional = periodRepository.findByIdAndUserIdAndDeleteFalse(periodId, userId);
@@ -71,8 +71,7 @@ public class PeriodService {
             periodRepository.delete(periodOptional.get());
             return new ResponseEntity<>("Suppression reussi", HttpStatus.OK);
         }
-        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-    }
+        throw new NotFoundException(ErrorMessage.notFound);    }
 
     public ResponseEntity<Object> partialUpdateByUser(Long userId, Long periodId, Map<String, Object> periodMap) {
         Optional<Period> periodOptional = periodRepository.findByIdAndUserIdAndDeleteFalse(periodId, userId);
@@ -92,8 +91,7 @@ public class PeriodService {
             Period updatePeriod = periodRepository.save(existingPeriod);
             return new ResponseEntity<>(updatePeriod, HttpStatus.OK);
         }
-        return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-    }
+        throw new NotFoundException(ErrorMessage.notFound);    }
 
     public List<Period> getPeriodsByTitle(String tileKeyWord) {
         return periodRepository.findAllByTitleContainingAndDeleteFalse(tileKeyWord);

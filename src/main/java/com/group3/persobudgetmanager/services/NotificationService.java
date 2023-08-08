@@ -1,6 +1,8 @@
 package com.group3.persobudgetmanager.services;
 
 import com.group3.persobudgetmanager.exceptions.CustomException;
+import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.models.Budget;
 import com.group3.persobudgetmanager.models.Notification;
 import com.group3.persobudgetmanager.models.User;
@@ -45,8 +47,7 @@ public class NotificationService {
             return ResponseEntity.created(location).body(notification);
         }
         else
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-    }
+            throw new NotFoundException(ErrorMessage.notFound);    }
 
     // Recuperer toutes les notifications d'un utilisateur pour un budget
     public List<Notification> getNotificationsForUserAndBudget(Long userId, Long budgetId) {
@@ -59,8 +60,7 @@ public class NotificationService {
             return new ResponseEntity<>(notificationOptional.get(), HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-        }
+            throw new NotFoundException(ErrorMessage.notFound);        }
     }
 
     public List<Notification> getNotificationsForUser(Long userId) {
@@ -73,8 +73,7 @@ public class NotificationService {
             return new ResponseEntity<>(notificationOptional.get(), HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-        }
+            throw new NotFoundException(ErrorMessage.notFound);        }
     }
 
     public ResponseEntity<Object> deleteNotification(Long userId, Long notificationId) {
@@ -85,8 +84,7 @@ public class NotificationService {
             return new ResponseEntity<>("Suppression reussi", HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(CustomException.notFoundException(), HttpStatus.NOT_FOUND);
-    }
+            throw new NotFoundException(ErrorMessage.notFound);    }
 
     public List<Notification> getNotificationsByContentContaining(String contentKeyWord) {
         return notificationRepository.findAllByContentContainingAndDeleteFalse(contentKeyWord);

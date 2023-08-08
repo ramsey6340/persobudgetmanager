@@ -2,6 +2,7 @@ package com.group3.persobudgetmanager.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -23,9 +24,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "titre")
+    @NotNull(message = "Pas null") //{NotNull.category.title}
     @Size(min = 1, max = 30, message = "{Size.category.title}")
-    @NotNull(message = "{NotNull.category.title}")
+    @Column(name = "titre")
     private String title; // Le titre de la catégorie. Exemple : Loyer
 
     @Size(min = 1, max = 200, message = "{Size.category.description}")

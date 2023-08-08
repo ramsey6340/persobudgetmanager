@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
@@ -38,6 +40,9 @@ public class Budget {
 
     @Column(name = "reliquat")
     private Double remainder; // Le reliquat du budget
+
+    @Column(name = "date_creation")
+    private LocalDate creationDate=LocalDate.now();
 
     @Column(name = "supprimer")
     @JsonIgnore
