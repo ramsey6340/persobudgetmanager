@@ -118,4 +118,15 @@ public class CustomException{
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    public static Object badRequest() {
+        // Créer le corps de la réponse avec le format souhaité
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("timestamp", LocalDateTime.now());
+        responseBody.put("status", HttpStatus.BAD_REQUEST.value());
+        responseBody.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        responseBody.put("message", ErrorMessage.badRequest);
+
+        return responseBody ;
+    }
 }
