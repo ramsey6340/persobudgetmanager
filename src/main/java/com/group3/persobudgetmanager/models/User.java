@@ -5,6 +5,9 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -41,4 +44,20 @@ public class User {
     @NotBlank(message = "Le mot de passe ne peut pas être vide")
     @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
     private String password;
+
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    private List <Period> period;
+
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    private List <Expense> expenses;
+
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    private List <Category> categories;
+
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    private List <Budget> budgets;
+
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    private List <Notification> notifications;
+
 }
