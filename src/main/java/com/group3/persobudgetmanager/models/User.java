@@ -1,14 +1,15 @@
 package com.group3.persobudgetmanager.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Table(name = "utilisateur")
 public class User {
     /**
@@ -19,21 +20,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom_complet")
+
     @Size(min = 2, max = 20, message = "")
     @NotNull(message = "")
+    @NotBlank(message = "Le nom ne peut pas etre vide")
     private String fullName;
 
-    @Size(min = 10, max = 30, message = "")
-    @NotNull(message = "")
+    @Size
+    @NotEmpty(message = "Email cannot be empty")
+    @NotBlank(message = "L'email ne peut pas être vide")
+    @Email(message = "L'email doit être une adresse email valide")
     private String email;
 
     @NotNull
     @Size(min=2, max = 10)
     private String login;
 
-    @Column(name = "mot_de_passe")
+
     @NotNull
-    @Size(min = 4)
+    @NotBlank(message = "Le mot de passe ne peut pas être vide")
+    @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
     private String password;
 }
