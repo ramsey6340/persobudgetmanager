@@ -1,13 +1,16 @@
 package com.group3.persobudgetmanager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Data
+@DynamicUpdate // permet de mettre à jour uniquement la partie modifier
 @NoArgsConstructor
 @Table(name = "categorie")
 public class Category {
@@ -21,12 +24,16 @@ public class Category {
     private Long id;
 
     @Column(name = "titre")
-    @Size(min = 1, max = 30, message = "")
-    @NotNull(message = "")
+    @Size(min = 1, max = 30, message = "{Size.category.title}")
+    @NotNull(message = "{NotNull.category.title}")
     private String title; // Le titre de la catégorie. Exemple : Loyer
 
-    @Size(min = 1, max = 200)
+    @Size(min = 1, max = 200, message = "{Size.category.description}")
     private String description;
+
+    @Column(name = "supprimer")
+    @JsonIgnore
+    private boolean delete=false;
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")

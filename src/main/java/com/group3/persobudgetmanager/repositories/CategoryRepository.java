@@ -5,10 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findAllByTitleContaining(String keyword);
-    List<Category> findAllByUserId(Long id);
-    List<Category> findAllByDescriptionContaining(String keyword);
+    List<Category> findAllByUserIdAndTitleContainingAndDeleteFalse(Long userId, String keyword);
+    List<Category> findAllByUserIdAndDeleteFalse(Long id);
+    List<Category> findAllByUserIdAndDescriptionContainingAndDeleteFalse(Long userId, String keyword);
+    Optional<Category> findByIdAndUserIdAndDeleteFalse(Long id, Long userId);
+
+    Optional<Category> findByUserIdAndTitleAndDeleteFalse(Long userId, String title);
 }
