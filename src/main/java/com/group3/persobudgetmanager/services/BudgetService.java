@@ -87,7 +87,8 @@ public class BudgetService {
     public Object deleteBudget(Long userId, Long budgetId, Budget budget) {
         Optional<Budget> supprimBudget = budgetRepository.findByUserIdAndId(userId,budgetId);
         if (supprimBudget.isPresent()){
-            budgetRepository.deleteByUserIdAndId(userId,budgetId);
+            //budgetRepository.deleteByUserIdAndId(userId,budgetId);
+            supprimBudget.get();
             return "Budget Supprimé avec succès";
         }else {
             return "Ce Budget n'a pas été trouvé";

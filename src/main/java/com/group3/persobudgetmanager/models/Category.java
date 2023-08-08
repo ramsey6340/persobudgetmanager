@@ -25,7 +25,7 @@ public class Category {
 
     @Column(name = "titre")
     @Size(min = 1, max = 30, message = "{Size.category.title}")
-    @NotNull(message = "{NotNull.category.title}")
+    @NotNull(message = "title ne doit pas etre nulltitle ne doit pas etre null")
     private String title; // Le titre de la catégorie. Exemple : Loyer
 
     @Size(min = 1, max = 200, message = "{Size.category.description}")
