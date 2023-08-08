@@ -49,4 +49,5 @@ public class Budget {
     @ManyToOne
     @JoinColumn(name = "categorie_id")
     private Category category;
+
 }

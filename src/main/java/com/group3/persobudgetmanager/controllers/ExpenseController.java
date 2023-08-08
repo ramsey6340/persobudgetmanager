@@ -16,14 +16,9 @@ import java.util.Map;
 public class ExpenseController {
     @Autowired
     ExpenseService expenseService;
-    @Operation(summary = "Obtenir la liste des dépenses")
-    @GetMapping("Expense")
-    public List<Expense> findAll(){
-        return expenseService.findAll();
-    }
     @Operation(summary = "Ajouter une nouvelle dépense")
     @PostMapping(value = "users/{userId}/expenses", params = {"period", "budget"})
-    public Expense save(@Valid @RequestBody Expense expense, @PathVariable Long userId, @RequestParam("period") Long period, @RequestParam("budget") Long budget){
+    public ResponseEntity<Object> save(@Valid @RequestBody Expense expense, @PathVariable Long userId, @RequestParam("period") Long period, @RequestParam("budget") Long budget){
         return expenseService.save(expense, userId, period, budget);
     }
 
@@ -34,18 +29,18 @@ public class ExpenseController {
     }
     @Operation(summary = "Afficher une dépense d'un budget")
     @GetMapping("users/{userId}/expenses/{expenseId}")
-    public ResponseEntity<Expense> findById(@PathVariable Long userId, @PathVariable Long expenseId){
+    public ResponseEntity<Object> findById(@PathVariable Long userId, @PathVariable Long expenseId){
         return expenseService.findById(userId, expenseId);
     }
     @Operation(summary = "Modifier une dépense")
     @PutMapping(value = "users/{userId}/expenses/{expenseId}")
-    public ResponseEntity<Expense> update(@PathVariable Long userId, @PathVariable Long expenseId, @RequestBody Expense expense){
+    public ResponseEntity<Object> update(@PathVariable Long userId, @PathVariable Long expenseId,@Valid @RequestBody Expense expense){
         return expenseService.update(userId, expenseId, expense);
     }
     @Operation(summary = "mis à jour partiel d'une dépense")
     @RequestMapping(value = "api/users/{userId}/expenses/{expenseId}", method = RequestMethod.PATCH)
-    public ResponseEntity<Expense> update2(@PathVariable Long userId, @PathVariable Long expenseId, @RequestBody Map<String, Object> expenseMap){
-        return expenseService.update2(userId, expenseId, expenseMap);
+    public ResponseEntity<Object> updatePatch(@PathVariable Long userId, @PathVariable Long expenseId,@Valid @RequestBody Map<String, Object> expenseMap){
+        return expenseService.updatePatch(userId, expenseId, expenseMap);
     }
     @Operation(summary = "Supprimer les depenses")
     @DeleteMapping(value = "users/{userId}/expenses/{expenseId}")
@@ -56,11 +51,6 @@ public class ExpenseController {
     @GetMapping(value = "users/{userId}/expenses", params={"amount", "note"})
     public List<Expense> search(@PathVariable Long userId,@RequestParam("amount") Double amount, @RequestParam("note") String note){
         return expenseService.search(userId,amount,note);
-    }
-    @Operation(summary = "Obtenir les informations d'une depense spécifique")
-    @GetMapping(value="expense/{id}")
-    public Object findById(@PathVariable Long id){
-        return expenseService.findById(id);
     }
 
 }

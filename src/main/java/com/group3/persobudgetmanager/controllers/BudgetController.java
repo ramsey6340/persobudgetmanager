@@ -18,7 +18,7 @@ public class BudgetController {
     private BudgetService budgetService;
     @Operation(summary = "Création de budget pour un utilisateur")
     @PostMapping(value = "users/{userId}/budgets", params = "categoryId")
-    public ResponseEntity<String> createBudget(@RequestBody Budget budget, @PathVariable Long userId, @RequestParam("category") Long categoryId){
+    public ResponseEntity<Object> createBudget(@RequestBody Budget budget, @PathVariable Long userId, @RequestParam("category") Long categoryId){
         return budgetService.createBudget(budget, userId, categoryId);
     }
     @Operation(summary = "Récuperer tous les budget d'un utilisateur")

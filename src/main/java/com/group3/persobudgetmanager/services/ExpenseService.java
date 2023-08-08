@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,12 +29,9 @@ public class ExpenseService {
     private BudgetRepository budgetRepository;
     @Autowired
     private PeriodRepository periodRepository;
-    public boolean existsById(Long id) {
-        return expenseRepository.existsById(id);
-    }
 
     //la méthode du service pour ajouter une nouvelle dépense
-    public Expense save(Expense expense, Long userId, Long periodId, Long budgetId){
+    public ResponseEntity<Object> save(Expense expense, Long userId, Long periodId, Long budgetId){
         Optional<User> user = userRepository.findById(userId);
         Optional<Budget> budget = budgetRepository.findById(budgetId);
         Optional<Period> period = periodRepository.findById(periodId);
@@ -43,94 +39,68 @@ public class ExpenseService {
             expense.setUser(user.get());
             expense.setBudget(budget.get());
             expense.setPeriod(period.get());
-            return expenseRepository.save(expense);
+            return new ResponseEntity<> (expenseRepository.save(expense),HttpStatus.CREATED);
         }else{
-            return new Expense();
+            return new  ResponseEntity<> ("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
     }
     //la méthode du service pour supprimer une dépense
-    public ResponseEntity<String> delete(Long userId, Long expenseId){
-        Optional<Expense> expenseOptional=expenseRepository.findByIdAndUserId(userId,expenseId);
+    public ResponseEntity<String> delete(Long expenseId, Long userId){
+        Optional<Expense> expenseOptional=expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()){
             expenseRepository.delete(expenseOptional.get());
             return ResponseEntity.ok("Supprission réussi!");
         }else{
-            return new ResponseEntity<>("Objet non rétrouver!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
     }
 
     //la méthode du service pour chercher une dépense
-    public ResponseEntity<Expense> findById(Long userId, Long id){
-        Optional<Expense> Expense1 = expenseRepository.findByIdAndUserId(id, userId);
-        if (Expense1.isPresent()){
-            return ResponseEntity.ok(Expense1.get());
+    public ResponseEntity<Object> findById(Long userId, Long id){
+        Optional<Expense> ExpenseOptional = expenseRepository.findByIdAndUserId(id, userId);
+        if (ExpenseOptional.isPresent()){
+            return ResponseEntity.ok(ExpenseOptional.get());
         }else{
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("La ressource demanade est introuvable!", HttpStatus.NOT_FOUND);
         }
     }
     // la méthode retournant la liste des dépenses
-    public List<Expense> findAll(){
-      return expenseRepository.findAll();
-    }
-    public List<Expense> findAllByAmount(double montant){
-        return expenseRepository.findAllByAmount(montant);
-    }
-    public List<Expense> findAllByCreationDate(LocalDate date){
-        return expenseRepository.findAllByCreationDate(date);
-    }
     public List<Expense> findAllByUserId(Long id){
         return expenseRepository.findAllByUserId(id);
     }
-    public Optional<Expense> findByIdAndUserId(Long id, Long userId){
-        return expenseRepository.findByIdAndUserId(id, userId);
-    }
-    public Optional<Expense> findByIdAndUserIdAndPeriodId(Long id, Long userId, Long periodId){
-        return expenseRepository.findByIdAndUserIdAndPeriodId(id, userId, periodId);
-    }
-    public Optional<Expense> findByIdAndUserIdAndBudgetIdAndPeriodId(Long id, Long userId, Long budgetId, Long periodId){
-        return expenseRepository.findByIdAndUserIdAndBudgetIdAndPeriodId(id, userId, budgetId, periodId);
-    }
 
-
-    public ResponseEntity<Expense> update(Long userId, Long expenseId, Expense expense) {
+    public ResponseEntity<Object> update(Long userId, Long expenseId, Expense expense) {
         Optional<Expense> expense1 =expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expense1.isPresent()){
             expense1.get().setAmount(expense.getAmount());
             expense1.get().setPeriod(expense.getPeriod());
             expense1.get().setCreationDate(expense.getCreationDate());
-            expense1.get().setNote(expense.getNote());
+            expense1.get().setDescription(expense.getDescription());
             return ResponseEntity.ok(expenseRepository.save(expense1.get()));
         }else{
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
 
         }
 
-    public ResponseEntity<Expense> update2(Long userId, Long expenseId, Map<String, Object> expenseMap) {
+    public ResponseEntity<Object> updatePatch(Long userId, Long expenseId, Map<String, Object> expenseMap) {
         Optional<Expense> expenseOptional = expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()){
             if (expenseMap.containsKey("amount")){
                 expenseOptional.get().setAmount((Double) expenseMap.get("amount"));
             }
-            if (expenseMap.containsKey("note")){
-                expenseOptional.get().setNote((String) expenseMap.get("note"));
+            if (expenseMap.containsKey("description")){
+                expenseOptional.get().setDescription((String) expenseMap.get("description"));
             }
             return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
         }else{
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
         }
         public List<Expense> search(Long userId, Double amount, String note){
-         return expenseRepository.findByUserIdOrAmountOrNoteContaining(userId,amount,note);
+         return expenseRepository.findByUserIdOrAmountOrDescriptionContaining(userId,amount,note);
         }
-        public Object findById(Long id){
-            Optional<Expense> expenseOptional = expenseRepository.findById(id);
-            if (expenseOptional.isPresent()){
-                return expenseRepository.findById(id);
-            }else{
-                return ResponseEntity.notFound().build();
-            }
-        }
+
 
     }
 

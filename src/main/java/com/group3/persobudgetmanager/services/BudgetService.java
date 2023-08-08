@@ -7,6 +7,7 @@ import com.group3.persobudgetmanager.repositories.BudgetRepository;
 import com.group3.persobudgetmanager.repositories.CategoryRepository;
 import com.group3.persobudgetmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class BudgetService {
     private UserRepository userRepository;
     private CategoryRepository categoryRepository;
     private BudgetRepository budgetRepository;
-    public ResponseEntity<String> createBudget(Budget budget, Long userId, Long categoryId) {
+    public ResponseEntity<Object> createBudget(Budget budget, Long userId, Long categoryId) {
         Optional<User> user=userRepository.findById(userId);
         Optional<Category> category= categoryRepository.findById(categoryId);
 
@@ -33,7 +34,7 @@ public class BudgetService {
             budgetRepository.save(budget) ;
             return ResponseEntity.ok("budget enregistré avec succès");
         }
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
     }
 
     public List<Budget> getAllBudgets(Long userId) {
@@ -56,7 +57,7 @@ public class BudgetService {
             modifBudget.get().setCategory(budget.getCategory());
             return budgetRepository.save(modifBudget.get());
     }else {
-         return "Ce Budget n'existe pas";
+            return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -79,7 +80,7 @@ public class BudgetService {
                 }
             return budgetRepository.save(patchingBudget.get());
             }else {
-            return "Ce Budget n'a pas été trouvé";
+            return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
         }
 
         }
@@ -90,7 +91,7 @@ public class BudgetService {
             budgetRepository.deleteByUserIdAndId(userId,budgetId);
             return "Budget Supprimé avec succès";
         }else {
-            return "Ce Budget n'a pas été trouvé";
+            return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
         }
     }
 
