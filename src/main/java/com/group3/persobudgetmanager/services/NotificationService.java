@@ -6,6 +6,7 @@ import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.models.Budget;
 import com.group3.persobudgetmanager.models.Notification;
 import com.group3.persobudgetmanager.models.User;
+import com.group3.persobudgetmanager.projections.NotificationProjection;
 import com.group3.persobudgetmanager.repositories.BudgetRepository;
 import com.group3.persobudgetmanager.repositories.NotificationRepository;
 import com.group3.persobudgetmanager.repositories.UserRepository;
@@ -63,14 +64,14 @@ public class NotificationService {
             throw new NotFoundException(ErrorMessage.notFound);        }
     }
 
-    public List<Notification> getNotificationsForUser(Long userId) {
+    public List<NotificationProjection> getNotificationsForUser(Long userId) {
         //return notificationRepository.findAllByUserIdAndDeleteFalse(userId);
         return notificationRepository.findAllNotificationsByUser(userId);
     }
 
     public ResponseEntity<Object> getNotificationForUser(Long userId, Long notificationId) {
         //Optional<Notification> notificationOptional = notificationRepository.findByIdAndUserIdAndDeleteFalse(notificationId, userId);
-        Optional<Notification> notificationOptional = notificationRepository.findNotificationByIdAndUser(notificationId, userId);
+        Optional<NotificationProjection> notificationOptional = notificationRepository.findNotificationByIdAndUser(notificationId, userId);
         if (notificationOptional.isPresent()) {
             return new ResponseEntity<>(notificationOptional.get(), HttpStatus.OK);
         }

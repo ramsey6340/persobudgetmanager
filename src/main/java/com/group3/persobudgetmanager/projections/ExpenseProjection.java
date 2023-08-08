@@ -10,7 +10,7 @@ public interface ExpenseProjection {
     LocalDate getCreationDate();
     LocalDate getStartDate();
     LocalDate getEndDate();
-    String getUserFullName();
-    Double getBudgetRemainder();
-    String getPeriodTitle();
+    String getUserId();
+    Long getBudgetId();
+    Long getPeriodId();
 }

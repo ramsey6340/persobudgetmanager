@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.controllers;
 
 import com.group3.persobudgetmanager.models.Notification;
+import com.group3.persobudgetmanager.projections.NotificationProjection;
 import com.group3.persobudgetmanager.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -37,7 +38,7 @@ public class NotificationController {
 
     @Operation(summary = "Récuperer les notifications d'un utilisateur")
     @GetMapping("users/{userId}/notifications")
-    public List<Notification> getNotificationsForUser(@PathVariable Long userId) {
+    public List<NotificationProjection> getNotificationsForUser(@PathVariable Long userId) {
         return notificationService.getNotificationsForUser(userId);
     }
 

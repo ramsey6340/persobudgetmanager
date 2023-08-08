@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -33,10 +34,12 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
+    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "budget_id")
+    @JsonIgnoreProperties(value = {"amount", "alertAmount", "title", "remainder", "creationDate"})
     private Budget budget;
 
 }

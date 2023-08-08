@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -39,6 +40,7 @@ public class Period {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
+    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
     private User user;
 
     @Column(name = "supprimer")

@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -50,9 +51,11 @@ public class Budget {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
+    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
     private User user;
     @ManyToOne
     @JoinColumn(name = "categorie_id")
+    @JsonIgnoreProperties(value = {"title", "description"})
     private Category category;
 
 }

@@ -58,11 +58,11 @@ public class CategoryService {
 
     public List<CategoryProjection> getCategoriesByUser(Long userId) {
         //return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
-        return categoryRepository.findAllCategoriesByUser(userId);
+        return categoryRepository.findAllCategoriesWithUser(userId);
     }
     public ResponseEntity<Object> getCategory(Long userId, Long categoryId) {
         //Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
-        Optional<CategoryProjection> category = categoryRepository.findCategoryByIdAndUser(categoryId, userId);
+        Optional<CategoryProjection> category = categoryRepository.findCategoryWithIdAndUser(categoryId, userId);
         if (category.isPresent()){
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         }

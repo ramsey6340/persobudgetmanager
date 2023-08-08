@@ -18,9 +18,9 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
     List<Period> findAllByTitleContainingAndDeleteFalse(String tileKeyWord);
     List<Period> findAllByNbDayAndDeleteFalse(int nbDay);
 
-    @Query("SELECT p.id, p.title, p.description, p.nbDay, u.fullName FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.delete = false")
+    @Query("SELECT p.id, p.title, p.description, p.nbDay, u.id FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.delete = false")
     List<PeriodProjection> findAllPeriodsWithUser(@Param("userId") Long userId);
 
-    @Query("SELECT p.id, p.title, p.description, p.nbDay, u.fullName FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.id=:periodId AND p.delete = false")
+    @Query("SELECT p.id, p.title, p.description, p.nbDay, u.id FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.id=:periodId AND p.delete = false")
     Optional<PeriodProjection> findPeriodWithUser(@Param("userId") Long userId, @Param("periodId") Long periodId);
 }

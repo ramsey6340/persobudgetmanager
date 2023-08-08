@@ -19,12 +19,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     // récuperer la liste des dépenses correspondant à un utilisateur en utilisant une projection
     @Query("SELECT e.id AS id, e.amount AS amount, e.description AS description, e.creationDate AS creationDate, " +
-            "e.startDate AS startDate, e.endDate AS endDate, u.fullName AS userFullName , b.remainder AS budgetRemainder, p.title AS periodTitle " +
+            "e.startDate AS startDate, e.endDate AS endDate, u.id AS userId , b.id AS budgetId, p.id AS periodId " +
             "FROM Expense e JOIN e.user u JOIN e.budget b JOIN e.period p WHERE e.user.id=:userId AND e.delete=false")
     List<ExpenseProjection> findAllExpensesWithUser(@Param("userId") Long userId);
 
     @Query("SELECT e.id AS id, e.amount AS amount, e.description AS description, e.creationDate AS creationDate, " +
-            "e.startDate AS startDate, e.endDate AS endDate, u.fullName AS userFullName , b.remainder AS budgetRemainder, p.title AS periodTitle " +
+            "e.startDate AS startDate, e.endDate AS endDate, u.id AS userId , b.id AS budgetId, p.id AS periodId " +
             "FROM Expense e JOIN e.user u JOIN e.budget b JOIN e.period p WHERE e.user.id=:userId AND e.id=:expenseId AND e.delete=false")
     Optional<ExpenseProjection> findExpenseWithIdAndUserId(@Param("userId") Long userId, @Param("expenseId") Long expenseId);
 }

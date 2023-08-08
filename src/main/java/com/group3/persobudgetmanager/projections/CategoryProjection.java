@@ -5,5 +5,5 @@ public interface CategoryProjection {
     Long getId();
     String getTitle();
     String getDescription();
-    String getUserFullName();
+    Long getUserId();
 }

@@ -19,10 +19,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByUserIdAndTitleAndDeleteFalse(Long userId, String title);
 
     @Query("SELECT c.id AS id, c.title AS title, c.description AS description," +
-            " u.fullName AS userFullName FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.delete=false")
-    List<CategoryProjection> findAllCategoriesByUser(@Param("userId") Long userId);
+            " u.id AS userId FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.delete=false")
+    List<CategoryProjection> findAllCategoriesWithUser(@Param("userId") Long userId);
 
     @Query("SELECT c.id AS id, c.title AS title, c.description AS description," +
-            " u.fullName AS userFullName FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.id=:categoryId AND c.delete=false")
-    Optional<CategoryProjection> findCategoryByIdAndUser(@Param("categoryId") Long categoryId, @Param("userId") Long userId);
+            " u.id AS userId FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.id=:categoryId AND c.delete=false")
+    Optional<CategoryProjection> findCategoryWithIdAndUser(@Param("categoryId") Long categoryId, @Param("userId") Long userId);
 }

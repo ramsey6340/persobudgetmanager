@@ -32,7 +32,7 @@ public class BudgetController {
     }
     @Operation(summary = "Récuperer un  budget spécifique pour un utilisateur")
     @GetMapping("users/{userId}/budgets/{budgetId}")
-    public Optional<BudgetProjection>  getBudgetById(@PathVariable Long userId, @PathVariable Long budgetId){
+    public Optional<BudgetProjection> getBudgetById(@PathVariable Long userId, @PathVariable Long budgetId){
         return budgetService.getBudgetByIdAndUserId(userId, budgetId);
     }
 

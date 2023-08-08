@@ -6,5 +6,5 @@ public interface PeriodProjection {
     String getTitle();
     String getDescription();
     int getNbDay();
-    String getUserFullName();
+    Long getUserId();
 }
