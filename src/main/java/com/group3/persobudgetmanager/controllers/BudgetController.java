@@ -4,6 +4,8 @@ import com.group3.persobudgetmanager.models.Budget;
 import com.group3.persobudgetmanager.services.BudgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Map;
+
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +19,8 @@ public class BudgetController {
     @Autowired
     private BudgetService budgetService;
     @Operation(summary = "Création de budget pour un utilisateur")
-    @PostMapping(value = "users/{userId}/budgets", params = "categoryId")
-    public ResponseEntity<Object> createBudget(@RequestBody Budget budget, @PathVariable Long userId, @RequestParam("category") Long categoryId){
+    @PostMapping(value = "users/{userId}/budgets", params = "category")
+    public ResponseEntity<Object> createBudget(@Valid @RequestBody Budget budget, @PathVariable Long userId, @RequestParam("category") Long categoryId){
         return budgetService.createBudget(budget, userId, categoryId);
     }
     @Operation(summary = "Récuperer tous les budget d'un utilisateur")

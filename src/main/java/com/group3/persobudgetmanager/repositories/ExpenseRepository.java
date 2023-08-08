@@ -12,5 +12,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findAllByUserId(Long id);
     // La méthode retournant la liste des depenses correspondant à un utilisateur, un budget et un période
     Optional<Expense> findByIdAndUserId(Long id, Long userId);
-    List<Expense> findByUserIdOrAmountOrDescriptionContaining(Long userId, Double amount, String note);
+    List<Expense> findByUserIdAndAmountOrDescriptionContainingOrPeriodTitleContainingOrBudgetId(Long userId, Double amount, String description, String periodTitle, Long budgetId);
 }

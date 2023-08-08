@@ -48,9 +48,12 @@ public class ExpenseController {
         return expenseService.delete(expenseId, userId);
     }
     @Operation(summary = "Faire une rechercher personnalisée")
-    @GetMapping(value = "users/{userId}/expenses", params={"amount", "note"})
-    public List<Expense> search(@PathVariable Long userId,@RequestParam("amount") Double amount, @RequestParam("note") String note){
-        return expenseService.search(userId,amount,note);
+    @GetMapping(value = "users/{userId}/expenses", params={"amount", "description", "period", "budget"})
+    public List<Expense> search(@PathVariable Long userId, @RequestParam("amount") Double amount,
+                                @RequestParam("description") String description,
+                                @RequestParam("periodTitle") String periodTitle,
+                                @RequestParam("budget") Long budget){
+        return expenseService.search(userId,amount,description,periodTitle,budget);
     }
 
 }

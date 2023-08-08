@@ -21,11 +21,14 @@ public class BudgetService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
     private BudgetRepository budgetRepository;
+
     public ResponseEntity<Object> createBudget(Budget budget, Long userId, Long categoryId) {
         Optional<User> user=userRepository.findById(userId);
-        Optional<Category> category= categoryRepository.findById(categoryId);
+        Optional<Category> category=categoryRepository.findById(categoryId);
 
         if (user.isPresent() && category.isPresent()){
             budget.setUser(user.get());
