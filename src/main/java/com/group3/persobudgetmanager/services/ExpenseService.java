@@ -11,7 +11,6 @@ import com.group3.persobudgetmanager.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -82,27 +81,6 @@ public class ExpenseService {
     public List<Expense> findAllByUserId(Long id){
         return expenseRepository.findAllByUserId(id);
     }
-    List<Expense> findAllByBudgetId(Long id){
-        return expenseRepository.findAllByBudgetId(id);
-    }
-    List<Expense> findAllByPeriodId(Long id){
-        return expenseRepository.findAllByPeriodId(id);
-    }
-    List<Expense> findAllByPeriodIdAndUserId(Long id, Long userId){
-        return expenseRepository.findAllByPeriodIdAndUserId(id, userId);
-    }
-    List<Expense> findAllByUserIdAndBudgetId(Long userId, Long budgetId){
-        return expenseRepository.findAllByUserIdAndBudgetId(userId, budgetId);
-    }
-    public List<Expense> findAllByPeriodIdAndUserIdAndBudgetId(Long id, Long userId, Long budgetId){
-        return expenseRepository.findAllByPeriodIdAndUserIdAndBudgetId(id, userId, budgetId);
-    }
-    public List<Expense> findAllByPeriodIdAndBudgetId(Long id, Long budgetId){
-        return expenseRepository.findAllByPeriodIdAndBudgetId(id, budgetId);
-    }
-    public Optional<Expense> findByIdAndUserIdAndBudgetId(Long id, Long userId, Long budgetId){
-        return expenseRepository.findByIdAndUserIdAndBudgetId(id, userId, budgetId);
-    }
     public Optional<Expense> findByIdAndUserId(Long id, Long userId){
         return expenseRepository.findByIdAndUserId(id, userId);
     }
@@ -144,6 +122,14 @@ public class ExpenseService {
         }
         public List<Expense> search(Long userId, Double amount, String note){
          return expenseRepository.findByUserIdOrAmountOrNoteContaining(userId,amount,note);
+        }
+        public Object findById(Long id){
+            Optional<Expense> expenseOptional = expenseRepository.findById(id);
+            if (expenseOptional.isPresent()){
+                return expenseRepository.findById(id);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
         }
 
     }

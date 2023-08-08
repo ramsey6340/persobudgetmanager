@@ -47,13 +47,21 @@ public class ExpenseController {
     public ResponseEntity<Expense> update2(@PathVariable Long userId, @PathVariable Long expenseId, @RequestBody Map<String, Object> expenseMap){
         return expenseService.update2(userId, expenseId, expenseMap);
     }
+    @Operation(summary = "Supprimer les depenses")
     @DeleteMapping(value = "users/{userId}/expenses/{expenseId}")
     public ResponseEntity<String> delete(@PathVariable Long userId, @PathVariable Long expenseId){
         return expenseService.delete(expenseId, userId);
     }
+    @Operation(summary = "Faire une rechercher personnalisée")
     @GetMapping(value = "users/{userId}/expenses", params={"amount", "note"})
     public List<Expense> search(@PathVariable Long userId,@RequestParam("amount") Double amount, @RequestParam("note") String note){
         return expenseService.search(userId,amount,note);
     }
+    @Operation(summary = "Obtenir les informations d'une depense spécifique")
+    @GetMapping(value="expense/{id}")
+    public Object findById(@PathVariable Long id){
+        return expenseService.findById(id);
+    }
+
 }
 
