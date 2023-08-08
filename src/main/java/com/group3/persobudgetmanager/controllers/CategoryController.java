@@ -3,6 +3,7 @@ package com.group3.persobudgetmanager.controllers;
 import com.group3.persobudgetmanager.models.Category;
 import com.group3.persobudgetmanager.projections.CategoryProjection;
 import com.group3.persobudgetmanager.services.CategoryService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

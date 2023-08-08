@@ -34,7 +34,7 @@ public class CategoryService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()){
             Optional<Category> categoryExist = categoryRepository.findByUserIdAndTitleAndDeleteFalse(userId, category.getTitle());
-            if (categoryExist.isEmpty()){ // Si une catégorie du même nom n'existe pas, on peut créer la catégorie
+            if (categoryExist.isPresent()){ // Si une catégorie du même nom n'existe pas, on peut créer la catégorie
 
                 category.setUser(user.get());
                 categoryRepository.save(category);
