@@ -37,12 +37,10 @@ public class Expense {
 
     @Column(name = "date_debut")
     @NotNull(message = "{NotNull.expense.startDate}")
-    @Past(message = "")
     private LocalDate startDate;
 
     @Column(name = "date_fin")
     @NotNull(message = "{NotNull.expense.endDate}")
-    @Past(message = "")
     private LocalDate endDate;
 
     @Column(name = "supprimer")
@@ -51,13 +49,19 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
+    @JsonIgnore
     private User user;
+
+    @Transient // Pour ne pas persister cette propriété dans la base de données
+    private String userFullName;
 
     @ManyToOne
     @JoinColumn(name = "budget_id")
+    @JsonIgnore
     private Budget budget;
 
     @ManyToOne
     @JoinColumn(name = "periode_id")
+    @JsonIgnore
     private Period period;
 }

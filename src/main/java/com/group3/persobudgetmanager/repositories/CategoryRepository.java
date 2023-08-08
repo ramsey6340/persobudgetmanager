@@ -13,6 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByUserIdAndDeleteFalse(Long id);
     List<Category> findAllByUserIdAndDescriptionContainingAndDeleteFalse(Long userId, String keyword);
     Optional<Category> findByIdAndUserIdAndDeleteFalse(Long id, Long userId);
-
     Optional<Category> findByUserIdAndTitleAndDeleteFalse(Long userId, String title);
 }

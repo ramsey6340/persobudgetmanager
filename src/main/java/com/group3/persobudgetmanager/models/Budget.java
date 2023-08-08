@@ -1,9 +1,13 @@
 package com.group3.persobudgetmanager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -31,10 +35,21 @@ public class Budget {
     @Column(name = "titre")
     private String title;
 
+    @Column(name = "reliquat")
+    private Double remainder; // Le reliquat du budget
+
+    @Column(name = "date_creation")
+    private LocalDate creationDate=LocalDate.now();
+
+    @Column(name = "supprimer")
+    @JsonIgnore
+    private boolean delete=false;
+
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
     private User user;
     @ManyToOne
     @JoinColumn(name = "categorie_id")
     private Category category;
+
 }
