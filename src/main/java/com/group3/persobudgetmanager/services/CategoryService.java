@@ -6,6 +6,7 @@ import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.exceptions.ResourceAlreadyExist;
 import com.group3.persobudgetmanager.models.Category;
 import com.group3.persobudgetmanager.models.User;
+import com.group3.persobudgetmanager.projections.CategoryProjection;
 import com.group3.persobudgetmanager.repositories.CategoryRepository;
 import com.group3.persobudgetmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,12 +56,13 @@ public class CategoryService {
         }
     }
 
-    public List<Category> getCategoriesByUser(Long userId) {
-
-        return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
+    public List<CategoryProjection> getCategoriesByUser(Long userId) {
+        //return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
+        return categoryRepository.findAllCategoriesByUser(userId);
     }
     public ResponseEntity<Object> getCategory(Long userId, Long categoryId) {
-        Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
+        //Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
+        Optional<CategoryProjection> category = categoryRepository.findCategoryByIdAndUser(categoryId, userId);
         if (category.isPresent()){
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         }

@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.services;
 
 import com.group3.persobudgetmanager.models.*;
+import com.group3.persobudgetmanager.projections.ExpenseProjection;
 import com.group3.persobudgetmanager.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +43,6 @@ public class ExpenseService {
                    if(expense.getAmount() <= budget.get().getRemainder()) {
                        if(expense.getStartDate().getMonth() == budget.get().getCreationDate().getMonth()) {
                            expense.setUser(user.get());
-                           expense.setUserFullName(user.get().getFullName());
                            expense.setBudget(budget.get());
                            expense.setPeriod(period.get());
                            budget.get().setRemainder(budget.get().getRemainder()-expense.getAmount());
@@ -110,7 +109,8 @@ public class ExpenseService {
 
     //la méthode du service pour chercher une dépense
     public ResponseEntity<Object> findById(Long userId, Long id){
-        Optional<Expense> ExpenseOptional = expenseRepository.findByIdAndUserId(id, userId);
+        //Optional<Expense> ExpenseOptional = expenseRepository.findByIdAndUserId(id, userId);
+        Optional<ExpenseProjection> ExpenseOptional = expenseRepository.findExpenseWithIdAndUserId(userId, id);
         if (ExpenseOptional.isPresent()){
             return ResponseEntity.ok(ExpenseOptional.get());
         }else{
@@ -118,8 +118,9 @@ public class ExpenseService {
         }
     }
     // la méthode retournant la liste des dépenses
-    public List<Expense> findAllByUserId(Long id){
-        return expenseRepository.findAllByUserId(id);
+    public List<ExpenseProjection> findAllByUserId(Long id){
+        //return expenseRepository.findAllByUserId(id);
+        return expenseRepository.findAllExpensesWithUser(id);
     }
 
     public ResponseEntity<Object> update(Long userId, Long expenseId, Expense expense) {

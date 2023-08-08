@@ -5,6 +5,7 @@ import com.group3.persobudgetmanager.exceptions.ErrorMessage;
 import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.models.Period;
 import com.group3.persobudgetmanager.models.User;
+import com.group3.persobudgetmanager.projections.PeriodProjection;
 import com.group3.persobudgetmanager.repositories.PeriodRepository;
 import com.group3.persobudgetmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,14 @@ public class PeriodService {
         }
         throw new NotFoundException(ErrorMessage.notFound);    }
 
-    public List<Period> getPeriodsByUser(Long userId) {
-        return periodRepository.findAllByUserIdAndDeleteFalse(userId);
+    public List<PeriodProjection> getPeriodsByUser(Long userId) {
+        //return periodRepository.findAllByUserIdAndDeleteFalse(userId);
+        return periodRepository.findAllPeriodsWithUser(userId);
     }
 
     public ResponseEntity<Object> getPeriodByUser(Long userId, Long periodId) {
-        Optional<Period> periodOptional = periodRepository.findByIdAndUserIdAndDeleteFalse(periodId, userId);
+        //Optional<Period> periodOptional = periodRepository.findByIdAndUserIdAndDeleteFalse(periodId, userId);
+        Optional<PeriodProjection> periodOptional = periodRepository.findPeriodWithUser(userId, periodId);
         if (periodOptional.isPresent()) {
             return new ResponseEntity<>(periodOptional.get(), HttpStatus.OK);
         }

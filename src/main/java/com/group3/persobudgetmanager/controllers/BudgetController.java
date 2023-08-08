@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.controllers;
 
 import com.group3.persobudgetmanager.models.Budget;
+import com.group3.persobudgetmanager.projections.BudgetProjection;
 import com.group3.persobudgetmanager.services.BudgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Map;
@@ -25,13 +26,13 @@ public class BudgetController {
     }
     @Operation(summary = "Récuperer tous les budget d'un utilisateur")
     @GetMapping("users/{userId}/budgets")
-    public List<Budget> getAllBudgets(@PathVariable Long userId){
+    public List<BudgetProjection> getAllBudgets(@PathVariable Long userId){
         return budgetService.getAllBudgets(userId);
 
     }
     @Operation(summary = "Récuperer un  budget spécifique pour un utilisateur")
     @GetMapping("users/{userId}/budgets/{budgetId}")
-    public Optional<Budget>  getBudgetById(@PathVariable Long userId, @PathVariable Long budgetId){
+    public Optional<BudgetProjection>  getBudgetById(@PathVariable Long userId, @PathVariable Long budgetId){
         return budgetService.getBudgetByIdAndUserId(userId, budgetId);
     }
 

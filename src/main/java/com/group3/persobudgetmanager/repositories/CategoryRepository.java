@@ -1,7 +1,10 @@
 package com.group3.persobudgetmanager.repositories;
 
 import com.group3.persobudgetmanager.models.Category;
+import com.group3.persobudgetmanager.projections.CategoryProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,4 +17,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByUserIdAndDescriptionContainingAndDeleteFalse(Long userId, String keyword);
     Optional<Category> findByIdAndUserIdAndDeleteFalse(Long id, Long userId);
     Optional<Category> findByUserIdAndTitleAndDeleteFalse(Long userId, String title);
+
+    @Query("SELECT c.id AS id, c.title AS title, c.description AS description," +
+            " u.fullName AS userFullName FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.delete=false")
+    List<CategoryProjection> findAllCategoriesByUser(@Param("userId") Long userId);
+
+    @Query("SELECT c.id AS id, c.title AS title, c.description AS description," +
+            " u.fullName AS userFullName FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.id=:categoryId AND c.delete=false")
+    Optional<CategoryProjection> findCategoryByIdAndUser(@Param("categoryId") Long categoryId, @Param("userId") Long userId);
 }

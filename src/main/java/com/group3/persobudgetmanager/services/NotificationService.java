@@ -64,11 +64,13 @@ public class NotificationService {
     }
 
     public List<Notification> getNotificationsForUser(Long userId) {
-        return notificationRepository.findAllByUserIdAndDeleteFalse(userId);
+        //return notificationRepository.findAllByUserIdAndDeleteFalse(userId);
+        return notificationRepository.findAllNotificationsByUser(userId);
     }
 
     public ResponseEntity<Object> getNotificationForUser(Long userId, Long notificationId) {
-        Optional<Notification> notificationOptional = notificationRepository.findByIdAndUserIdAndDeleteFalse(notificationId, userId);
+        //Optional<Notification> notificationOptional = notificationRepository.findByIdAndUserIdAndDeleteFalse(notificationId, userId);
+        Optional<Notification> notificationOptional = notificationRepository.findNotificationByIdAndUser(notificationId, userId);
         if (notificationOptional.isPresent()) {
             return new ResponseEntity<>(notificationOptional.get(), HttpStatus.OK);
         }

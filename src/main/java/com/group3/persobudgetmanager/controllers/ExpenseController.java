@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.controllers;
 
 import com.group3.persobudgetmanager.models.Expense;
+import com.group3.persobudgetmanager.projections.ExpenseProjection;
 import com.group3.persobudgetmanager.services.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class ExpenseController {
 
     @Operation(summary = "Afficher toutes les dépense d'un utilisateur")
     @GetMapping("users/{userId}/expenses")
-    public List<Expense> findAllByUserId(@PathVariable Long userId){
+    public List<ExpenseProjection> findAllByUserId(@PathVariable Long userId){
         return expenseService.findAllByUserId(userId);
     }
     @Operation(summary = "Afficher une dépense d'un budget")

@@ -3,6 +3,7 @@ package com.group3.persobudgetmanager.services;
 import com.group3.persobudgetmanager.models.Budget;
 import com.group3.persobudgetmanager.models.Category;
 import com.group3.persobudgetmanager.models.User;
+import com.group3.persobudgetmanager.projections.BudgetProjection;
 import com.group3.persobudgetmanager.repositories.BudgetRepository;
 import com.group3.persobudgetmanager.repositories.CategoryRepository;
 import com.group3.persobudgetmanager.repositories.UserRepository;
@@ -40,13 +41,15 @@ public class BudgetService {
         return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
     }
 
-    public List<Budget> getAllBudgets(Long userId) {
-        return budgetRepository.findAllByUserId(userId);
+    public List<BudgetProjection> getAllBudgets(Long userId) {
+        //return budgetRepository.findAllByUserId(userId);
+        return budgetRepository.findAllBudgetsWithUser(userId);
     }
 
 
-    public Optional<Budget> getBudgetByIdAndUserId(Long userId, Long budgetId) {
-        return budgetRepository.findByUserIdAndId(userId, budgetId);
+    public Optional<BudgetProjection> getBudgetByIdAndUserId(Long userId, Long budgetId) {
+        //return budgetRepository.findByUserIdAndId(userId, budgetId);
+        return budgetRepository.findBudgetWithIdAndUser(budgetId, userId);
     }
 
     public Object updateBudget(Long userId, Long budgetId,  Budget budget) {

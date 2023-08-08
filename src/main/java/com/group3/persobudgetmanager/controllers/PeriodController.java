@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.controllers;
 
 import com.group3.persobudgetmanager.models.Period;
+import com.group3.persobudgetmanager.projections.PeriodProjection;
 import com.group3.persobudgetmanager.services.PeriodService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class PeriodController {
 
     @Operation(summary = "Récuperer toutes les periodes d'un utilisateur")
     @GetMapping("users/{userId}/periods")
-    public List<Period> getPeriodsByUser(@PathVariable Long userId) {
+    public List<PeriodProjection> getPeriodsByUser(@PathVariable Long userId) {
         return periodService.getPeriodsByUser(userId);
     }
 

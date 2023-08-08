@@ -1,6 +1,7 @@
 package com.group3.persobudgetmanager.controllers;
 
 import com.group3.persobudgetmanager.models.Category;
+import com.group3.persobudgetmanager.projections.CategoryProjection;
 import com.group3.persobudgetmanager.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class CategoryController {
     }
     @Operation(summary = "Obtenir les catégories d'un utiisateur")
     @GetMapping("users/{userId}/categories")
-    public List<Category> getCategoriesByUser(@PathVariable Long userId) {
+    public List<CategoryProjection> getCategoriesByUser(@PathVariable Long userId) {
         return categoryService.getCategoriesByUser(userId);
     }
     @Operation(summary = "Obtenir une catégorie pour un utilisateur")

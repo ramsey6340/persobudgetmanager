@@ -49,11 +49,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnore
     private User user;
-
-    @Transient // Pour ne pas persister cette propriété dans la base de données
-    private String userFullName;
 
     @ManyToOne
     @JoinColumn(name = "budget_id")
