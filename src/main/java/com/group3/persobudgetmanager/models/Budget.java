@@ -36,6 +36,9 @@ public class Budget {
     @Size(max = 50, message = "{Size.budget.title}")
     private String title;
 
+    @Column(name = "reliquat")
+    private Double remainder; // Le reliquat du budget
+
     @Column(name = "supprimer")
     @JsonIgnore
     private boolean delete=false;
