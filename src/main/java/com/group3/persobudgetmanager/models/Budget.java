@@ -36,7 +36,7 @@ public class Budget {
     private String title;
 
     @Column(name = "reliquat")
-    private Double remainder; // Le reliquat du budget
+    private Double remainder = amount; // Le reliquat du budget
 
     @Column(name = "date_creation")
     private LocalDate creationDate=LocalDate.now();
