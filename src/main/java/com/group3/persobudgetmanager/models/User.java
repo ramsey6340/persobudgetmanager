@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,4 +44,19 @@ public class User {
     @NotBlank(message = "Le mot de passe ne peut pas être vide")
     @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
     private String password;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    List<Period> periods = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    List<Notification> notifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    List<Expense> expenses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    List<Budget> budgets = new ArrayList<>();
 }
