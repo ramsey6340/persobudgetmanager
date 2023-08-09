@@ -22,4 +22,5 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     void deleteByUserIdAndId(Long userId, Long budgetId);
 
     List<Budget> findByUserIdAndAmountOrAlertAmountOrTitleOrCategoryId(Long userId, Double montant, Double alertMontant, String titre, Long categorie);
+    List<Budget> findAllByUserIdAndDeleteFalse(Long userId);
 }

@@ -59,17 +59,7 @@ public class BudgetService {
     }
 
     public List<Budget> getAllBudgets(Long userId) {
-         List<Budget> listes = budgetRepository.findAllByUserId(userId);
-         List<Budget> listeAfficher = new ArrayList<>();
-         if (!listes.isEmpty()){
-             for (Budget liste : listes
-             ) {
-                if (!liste.isDelete()){
-                    listeAfficher.add(liste);
-                }
-             }
-         }
-        return listeAfficher;
+        return budgetRepository.findAllByUserIdAndDeleteFalse(userId);
     }
 
 
