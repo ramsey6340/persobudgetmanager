@@ -22,6 +22,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Query("SELECT n.id, n.content, u.id FROM Notification n JOIN n.user u WHERE n.user.id=:userId AND n.delete=false")
     List<NotificationProjection> findAllNotificationsByUser(@Param("userId") Long userId);
 
+    @Query("SELECT n.id, n.content, u.id FROM Notification n JOIN n.user u WHERE n.user.id=:userId AND n.delete=true")
+    List<NotificationProjection> findAllNotificationsByUserTrash(@Param("userId") Long userId);
+
     @Query("SELECT n.id, n.content, u.id FROM Notification n JOIN n.user u WHERE n.user.id=:userId AND n.id=:notificationId AND n.delete=false")
     Optional<NotificationProjection> findNotificationByIdAndUser(@Param("notificationId") Long notificationId, @Param("userId") Long userId);
 }

@@ -69,6 +69,11 @@ public class NotificationService {
         return notificationRepository.findAllNotificationsByUser(userId);
     }
 
+    public List<NotificationProjection> getNotificationsForUserTrash(Long userId) {
+        //return notificationRepository.findAllByUserIdAndDeleteFalse(userId);
+        return notificationRepository.findAllNotificationsByUserTrash(userId);
+    }
+
     public ResponseEntity<Object> getNotificationForUser(Long userId, Long notificationId) {
         //Optional<Notification> notificationOptional = notificationRepository.findByIdAndUserIdAndDeleteFalse(notificationId, userId);
         Optional<NotificationProjection> notificationOptional = notificationRepository.findNotificationByIdAndUser(notificationId, userId);

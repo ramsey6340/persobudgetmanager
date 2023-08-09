@@ -38,12 +38,12 @@ public class CustomException{
         // Créer le corps de la réponse avec le format souhaité
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("timestamp", LocalDateTime.now());
-        responseBody.put("status", HttpStatus.BAD_REQUEST.value());
-        responseBody.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        responseBody.put("status", HttpStatus.NOT_FOUND.value());
+        responseBody.put("error", HttpStatus.NOT_FOUND.getReasonPhrase());
         responseBody.put("message", errorMessages);
 
         // Renvoyer la réponse personnalisée avec le statut 400 (Bad Request)
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 
     private List<String> getErrorMessages(BindingResult bindingResult) {

@@ -13,10 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -37,6 +34,10 @@ public class ExpenseService {
         Optional<User> user = userRepository.findById(userId);
         Optional<Budget> budget = budgetRepository.findById(budgetId);
         Optional<Period> period = periodRepository.findById(periodId);
+
+        // On instancie la notification ici pour que je puisse y acceder en dehors des "if"
+        List<Notification> notifications = notificationRepository.findAllByBudgetIdAndDeleteFalse(budgetId);
+
         if(user.isPresent() && budget.isPresent() && period.isPresent()){
            if (budget.get().getRemainder()!=0){
                if (getNbDay(expense.getStartDate(), expense.getEndDate()) == period.get().getNbDay()){
@@ -47,30 +48,38 @@ public class ExpenseService {
                            expense.setPeriod(period.get());
                            budget.get().setRemainder(budget.get().getRemainder()-expense.getAmount());
 
-                           if(budget.get().getRemainder()<=budget.get().getAlertAmount()) {
-                               Notification notification = new Notification();
-                               notification.setDelete(false);
-                               notification.setBudget(budget.get());
-                               notification.setUser(user.get());
-                               notification.setContent("Alerte:Vous avez atteint le reliquat de votre budget");
-                               notificationRepository.save(notification);
-                           }
-                           budgetRepository.save(budget.get());
-                           expenseRepository.save(expense);
-
-                           // On récupère la localisation de la nouvelle depense
+                           // On enregistre la dépense
+                           Expense expenseCreated = expenseRepository.save(expense);
+                           Budget budgetCreated = budgetRepository.save(budget.get());
+                           // On récupère la localisation de la nouvelle dépense
                            URI location = ServletUriComponentsBuilder.
                                    fromCurrentRequest().
                                    path("{id}").
                                    buildAndExpand(expense.getId()).
                                    toUri();
 
+                           if(budgetCreated.getRemainder()<=budgetCreated.getAlertAmount()) {
+                               if (notifications.size() == 0){
+                                   // Enregistrement d'une notification
+                                   notifications.add(new Notification());
+                               }
+                               notifications.get(0).setDelete(false);
+                               notifications.get(0).setBudget(budget.get());
+                               notifications.get(0).setUser(user.get());
+                               notifications.get(0).setContent("Alerte: Votre budget est maintenant de "+budget.get().getRemainder());
+                               notifications.set(0, notificationRepository.save(notifications.get(0)));
+                           }
+
                            // Creation d'un body pour la réponse
                            Map<String, Object> responseBody = new HashMap<>();
+                           responseBody.put("depense ID", expense.getId());
                            responseBody.put("depense montant", expense.getAmount());
                            responseBody.put("categorie", budget.get().getCategory().getTitle());
                            responseBody.put("periode", period.get().getTitle());
                            responseBody.put("reliquat", budget.get().getRemainder());
+                           if (!notifications.isEmpty() && !Objects.equals(notifications.get(0).getContent(), "")){
+                               responseBody.put("notification", notifications.get(0).getContent());
+                           }
 
                            return ResponseEntity.created(location).body(responseBody);
                        }
@@ -79,7 +88,7 @@ public class ExpenseService {
                        }
                    }
                    else{
-                       return new ResponseEntity<>("Le montant du budget est supperieur au reliquat", HttpStatus.BAD_REQUEST);
+                       return new ResponseEntity<>("Le montant de la dépense est superieur au reliquat", HttpStatus.BAD_REQUEST);
                    }
                }
                else {
@@ -100,8 +109,12 @@ public class ExpenseService {
     public ResponseEntity<String> delete(Long expenseId, Long userId){
         Optional<Expense> expenseOptional=expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()){
-            expenseRepository.delete(expenseOptional.get());
-            return ResponseEntity.ok("Supprission réussi!");
+            //expenseRepository.delete(expenseOptional.get());
+            // Ajustement du reliquat pour lui ajouté le montant de la dépense supprimée
+            Budget budget = expenseOptional.get().getBudget();
+            budget.setRemainder(budget.getRemainder()+expenseOptional.get().getAmount());
+            expenseOptional.get().setDelete(true);
+            return ResponseEntity.ok("Suppression réussi!");
         }else{
             return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
@@ -122,6 +135,10 @@ public class ExpenseService {
         //return expenseRepository.findAllByUserId(id);
         return expenseRepository.findAllExpensesWithUser(id);
     }
+    public List<ExpenseProjection> findAllByUserIdTrash(Long id){
+        //return expenseRepository.findAllByUserId(id);
+        return expenseRepository.findAllExpensesWithUserTrash(id);
+    }
 
     public ResponseEntity<Object> update(Long userId, Long expenseId, Expense expense) {
         Optional<Expense> expense1 =expenseRepository.findByIdAndUserId(expenseId, userId);
@@ -130,6 +147,12 @@ public class ExpenseService {
             expense1.get().setPeriod(expense.getPeriod());
             expense1.get().setCreationDate(expense.getCreationDate());
             expense1.get().setDescription(expense.getDescription());
+
+            // On modifie egalement le budget de la depense
+            Double valueToAdd = expense1.get().getAmount()-expense.getAmount();
+            Double newRemainder = valueToAdd+expense1.get().getBudget().getRemainder();
+            expense1.get().getBudget().setRemainder(newRemainder);
+            budgetRepository.save(expense1.get().getBudget());
             return ResponseEntity.ok(expenseRepository.save(expense1.get()));
         }else{
             return new ResponseEntity("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
@@ -142,6 +165,13 @@ public class ExpenseService {
         if (expenseOptional.isPresent()){
             if (expenseMap.containsKey("amount")){
                 expenseOptional.get().setAmount((Double) expenseMap.get("amount"));
+                Double expenseAmount = (Double) expenseMap.get("amount");
+
+                // On modifie également le budget de la depense
+                Double valueToAdd = expenseOptional.get().getAmount()-expenseAmount;
+                Double newRemainder = valueToAdd+expenseOptional.get().getBudget().getRemainder();
+                expenseOptional.get().getBudget().setRemainder(newRemainder);
+                budgetRepository.save(expenseOptional.get().getBudget());
             }
             if (expenseMap.containsKey("description")){
                 expenseOptional.get().setDescription((String) expenseMap.get("description"));

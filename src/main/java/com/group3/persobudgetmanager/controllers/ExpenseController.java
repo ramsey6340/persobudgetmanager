@@ -17,8 +17,9 @@ import java.util.Map;
 public class ExpenseController {
     @Autowired
     ExpenseService expenseService;
+
     @Operation(summary = "Ajouter une nouvelle dépense")
-    @PostMapping(value = "users/{userId}/expenses", params = {"period", "budget"})
+    @PostMapping(value = "users/{userId}/expenses")
     public ResponseEntity<Object> save(@Valid @RequestBody Expense expense, @PathVariable Long userId, @RequestParam("period") Long period, @RequestParam("budget") Long budget){
         return expenseService.save(expense, userId, period, budget);
     }
@@ -27,6 +28,12 @@ public class ExpenseController {
     @GetMapping("users/{userId}/expenses")
     public List<ExpenseProjection> findAllByUserId(@PathVariable Long userId){
         return expenseService.findAllByUserId(userId);
+    }
+
+    @Operation(summary = "Afficher toutes les dépense supprimer d'un utilisateur")
+    @GetMapping("users/{userId}/expenses/trash")
+    public List<ExpenseProjection> findAllByUserIdTrash(@PathVariable Long userId){
+        return expenseService.findAllByUserIdTrash(userId);
     }
     @Operation(summary = "Afficher une dépense d'un budget")
     @GetMapping("users/{userId}/expenses/{expenseId}")
@@ -39,7 +46,7 @@ public class ExpenseController {
         return expenseService.update(userId, expenseId, expense);
     }
     @Operation(summary = "mis à jour partiel d'une dépense")
-    @RequestMapping(value = "api/users/{userId}/expenses/{expenseId}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "users/{userId}/expenses/{expenseId}")
     public ResponseEntity<Object> updatePatch(@PathVariable Long userId, @PathVariable Long expenseId,@Valid @RequestBody Map<String, Object> expenseMap){
         return expenseService.updatePatch(userId, expenseId, expenseMap);
     }

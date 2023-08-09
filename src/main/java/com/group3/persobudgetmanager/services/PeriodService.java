@@ -24,6 +24,7 @@ public class PeriodService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private PeriodRepository periodRepository;
 
     public ResponseEntity<Object> create(Long userId, Period period) {
@@ -43,6 +44,11 @@ public class PeriodService {
     public List<PeriodProjection> getPeriodsByUser(Long userId) {
         //return periodRepository.findAllByUserIdAndDeleteFalse(userId);
         return periodRepository.findAllPeriodsWithUser(userId);
+    }
+
+    public List<PeriodProjection> getPeriodsByUserTrash(Long userId) {
+        //return periodRepository.findAllByUserIdAndDeleteFalse(userId);
+        return periodRepository.findAllPeriodsWithUserTrash(userId);
     }
 
     public ResponseEntity<Object> getPeriodByUser(Long userId, Long periodId) {

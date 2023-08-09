@@ -23,6 +23,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<CategoryProjection> findAllCategoriesWithUser(@Param("userId") Long userId);
 
     @Query("SELECT c.id AS id, c.title AS title, c.description AS description," +
+            " u.id AS userId FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.delete=true")
+    List<CategoryProjection> findAllCategoriesWithUserTrash(@Param("userId") Long userId);
+
+    @Query("SELECT c.id AS id, c.title AS title, c.description AS description," +
             " u.id AS userId FROM Category c JOIN c.user u WHERE c.user.id=:userId AND c.id=:categoryId AND c.delete=false")
     Optional<CategoryProjection> findCategoryWithIdAndUser(@Param("categoryId") Long categoryId, @Param("userId") Long userId);
 }

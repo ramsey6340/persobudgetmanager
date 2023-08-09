@@ -45,6 +45,10 @@ public class BudgetService {
         //return budgetRepository.findAllByUserId(userId);
         return budgetRepository.findAllBudgetsWithUser(userId);
     }
+    public List<BudgetProjection> getAllBudgetsTrash(Long userId) {
+        //return budgetRepository.findAllByUserId(userId);
+        return budgetRepository.findAllBudgetsWithUserTrash(userId);
+    }
 
 
     public Optional<BudgetProjection> getBudgetByIdAndUserId(Long userId, Long budgetId) {

@@ -31,6 +31,11 @@ public class PeriodController {
         return periodService.getPeriodsByUser(userId);
     }
 
+    @GetMapping("users/{userId}/periods/trash")
+    public List<PeriodProjection> getPeriodsByUserTrash(@PathVariable Long userId) {
+        return periodService.getPeriodsByUserTrash(userId);
+    }
+
     @Operation(summary = "Récuperer une periode d'un utilisateur")
     @GetMapping("users/{userId}/periods/{periodId}")
     public ResponseEntity<Object> getPeriodByUser(@PathVariable Long userId, @PathVariable Long periodId) {

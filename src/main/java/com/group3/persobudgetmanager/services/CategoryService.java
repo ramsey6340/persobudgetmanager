@@ -60,6 +60,10 @@ public class CategoryService {
         //return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
         return categoryRepository.findAllCategoriesWithUser(userId);
     }
+    public List<CategoryProjection> getCategoriesByUserTrash(Long userId) {
+        //return categoryRepository.findAllByUserIdAndDeleteFalse(userId);
+        return categoryRepository.findAllCategoriesWithUserTrash(userId);
+    }
     public ResponseEntity<Object> getCategory(Long userId, Long categoryId) {
         //Optional<Category> category = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
         Optional<CategoryProjection> category = categoryRepository.findCategoryWithIdAndUser(categoryId, userId);
