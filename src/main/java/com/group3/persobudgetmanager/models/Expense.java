@@ -2,6 +2,8 @@ package com.group3.persobudgetmanager.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+//import com.group3.persobudgetmanager.validators.annotations.ValidDate;
+//import com.group3.persobudgetmanager.validators.annotations.ValidDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -9,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -38,10 +41,14 @@ public class Expense {
 
     @Column(name = "date_debut")
     @NotNull(message = "{NotNull.expense.startDate}")
+    //@DateTimeFormat(pattern = "yyyy-MM-dd") // le format de la date
+    //@ValidDate(message = "La date de debut n'est pas valide")
     private LocalDate startDate;
 
     @Column(name = "date_fin")
     @NotNull(message = "{NotNull.expense.endDate}")
+    //@DateTimeFormat(pattern = "yyyy-MM-dd") // le format de la date
+    //@ValidDate(message = "La date de fin n'est pas valide")
     private LocalDate endDate;
 
     @Column(name = "supprimer")

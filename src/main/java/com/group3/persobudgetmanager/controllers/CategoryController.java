@@ -30,6 +30,12 @@ public class CategoryController {
     public List<CategoryProjection> getCategoriesByUser(@PathVariable Long userId) {
         return categoryService.getCategoriesByUser(userId);
     }
+
+    @Operation(summary = "Obtenir les catégories supprimes d'un utilisateur")
+    @GetMapping("users/{userId}/categories/trash")
+    public List<CategoryProjection> getCategoriesByUserTrash(@PathVariable Long userId) {
+        return categoryService.getCategoriesByUserTrash(userId);
+    }
     @Operation(summary = "Obtenir une catégorie pour un utilisateur")
     @GetMapping("users/{userId}/categories/{categoryId}")
     public ResponseEntity<Object> getCategory(@PathVariable Long userId, @PathVariable Long categoryId) {

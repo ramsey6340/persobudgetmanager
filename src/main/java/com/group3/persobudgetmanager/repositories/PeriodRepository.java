@@ -21,6 +21,9 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
     @Query("SELECT p.id, p.title, p.description, p.nbDay, u.id FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.delete = false")
     List<PeriodProjection> findAllPeriodsWithUser(@Param("userId") Long userId);
 
+    @Query("SELECT p.id, p.title, p.description, p.nbDay, u.id FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.delete = true")
+    List<PeriodProjection> findAllPeriodsWithUserTrash(@Param("userId") Long userId);
+
     @Query("SELECT p.id, p.title, p.description, p.nbDay, u.id FROM Period p JOIN p.user u WHERE p.user.id=:userId AND p.id=:periodId AND p.delete = false")
     Optional<PeriodProjection> findPeriodWithUser(@Param("userId") Long userId, @Param("periodId") Long periodId);
 }

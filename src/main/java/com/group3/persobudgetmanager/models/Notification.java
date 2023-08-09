@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Entity
@@ -26,7 +27,10 @@ public class Notification {
 
     @Column(name = "contenue")
     @NotNull(message = "{NotNull.notification.content}")
-    private String content;
+    private String content="";
+
+    @NotNull(message = "{NotNull.notification.date}")
+    private LocalDate date=LocalDate.now();
 
     @Column(name = "supprimer")
     @JsonIgnore

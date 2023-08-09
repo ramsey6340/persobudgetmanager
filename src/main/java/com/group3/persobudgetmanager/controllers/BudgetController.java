@@ -30,6 +30,13 @@ public class BudgetController {
         return budgetService.getAllBudgets(userId);
 
     }
+
+    @Operation(summary = "Récuperer tous les budget supprimes d'un utilisateur")
+    @GetMapping("users/{userId}/budgets/trash")
+    public List<BudgetProjection> getAllBudgetsTrash(@PathVariable Long userId){
+        return budgetService.getAllBudgetsTrash(userId);
+
+    }
     @Operation(summary = "Récuperer un  budget spécifique pour un utilisateur")
     @GetMapping("users/{userId}/budgets/{budgetId}")
     public Optional<BudgetProjection> getBudgetById(@PathVariable Long userId, @PathVariable Long budgetId){

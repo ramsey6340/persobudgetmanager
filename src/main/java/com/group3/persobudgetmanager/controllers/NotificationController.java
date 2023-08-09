@@ -42,6 +42,12 @@ public class NotificationController {
         return notificationService.getNotificationsForUser(userId);
     }
 
+    @Operation(summary = "Récuperer les notifications supprimées d'un utilisateur ")
+    @GetMapping("users/{userId}/notifications/trash")
+    public List<NotificationProjection> getNotificationsForUserTrash(@PathVariable Long userId) {
+        return notificationService.getNotificationsForUserTrash(userId);
+    }
+
     @Operation(summary = "Récuperer une notification d'un utilisateur")
     @GetMapping("users/{userId}/notifications/{notificationId}")
     public ResponseEntity<Object> getNotificationForUser(@PathVariable Long userId, @PathVariable Long notificationId) {
