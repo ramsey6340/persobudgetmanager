@@ -15,6 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
 @NoArgsConstructor
 @Table(name = "categorie")
+
 public class Category {
     /**
      * La classe Category répresente la catégorie de dépense.
