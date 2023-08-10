@@ -31,9 +31,26 @@ public class BudgetService {
         Optional<User> user=userRepository.findById(userId);
         Optional<Category> category=categoryRepository.findById(categoryId);
 
+        //Vérification si le montant alerte n'est pas supérieur au montant
+        double montant = budget.getAmount();
+        double montantAlert = budget.getAlertAmount();
+
+        //Vérification si les deux montants sont null
+        if(montant == 0.0 || montantAlert == 0.0){
+            return ResponseEntity.ok( "Le montant et le montant alerte  doivent être renseignés");
+        }
+        //Vérification si les deux montants ne sont pas négatifs
+        if (montant < 0.0 || montantAlert < 0.0){
+            return ResponseEntity.ok("veillez renseignez des montants positifs") ;
+        }
+        if(montantAlert > montant){
+            return ResponseEntity.ok("Le montant alerte ne doit pas être supérieur au montant");
+        }
+
+
         if (user.isPresent() && category.isPresent()){
             budget.setUser(user.get());
-
+            budget.setRemainder(budget.getAmount());
             budget.setCategory(category.get());
             budgetRepository.save(budget) ;
             return ResponseEntity.ok("budget enregistré avec succès");
@@ -99,7 +116,8 @@ public class BudgetService {
         Optional<Budget> supprimBudget = budgetRepository.findByUserIdAndId(userId,budgetId);
         if (supprimBudget.isPresent()){
             //budgetRepository.deleteByUserIdAndId(userId,budgetId);
-            supprimBudget.get();
+            supprimBudget.get().setDelete(true);
+            budgetRepository.save(supprimBudget.get());
             return "Budget Supprimé avec succès";
         }else {
             return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
