@@ -36,10 +36,10 @@ public class ExpenseService {
         Optional<Period> period = periodRepository.findById(periodId);
 
         // On instancie la notification ici pour pouvoir y acceder en dehors des "if"
-        List<Notification> notifications = notificationRepository.findAllByBudgetIdAndDeleteFalse(budgetId);
+        //List<Notification> notifications = notificationRepository.findAllByBudgetIdAndDeleteFalse(budgetId);
 
         if(user.isPresent() && budget.isPresent() && period.isPresent()){
-           if (budget.get().getRemainder()!=0){
+           if (budget.get().getRemainder() <= budget.get().getAmount()){
                if (getNbDay(expense.getStartDate(), expense.getEndDate()) == period.get().getNbDay()){
                    if(expense.getAmount() <= budget.get().getRemainder()) {
                        if(expense.getStartDate().getMonth() == budget.get().getCreationDate().getMonth()) {
@@ -59,7 +59,7 @@ public class ExpenseService {
                                    toUri();
 
                            if(budgetCreated.getRemainder()<=budgetCreated.getAlertAmount()) {
-                               if (notifications.size() == 0){
+                               /*if (notifications.isEmpty()){
                                    // Enregistrement d'une notification
                                    notifications.add(new Notification());
                                }
@@ -67,7 +67,7 @@ public class ExpenseService {
                                notifications.get(0).setBudget(budget.get());
                                notifications.get(0).setUser(user.get());
                                notifications.get(0).setContent("Alerte: Votre budget est maintenant de "+budget.get().getRemainder());
-                               notifications.set(0, notificationRepository.save(notifications.get(0)));
+                               notifications.set(0, notificationRepository.save(notifications.get(0)));*/
                            }
 
                            // Creation d'un body pour la réponse
@@ -77,9 +77,9 @@ public class ExpenseService {
                            responseBody.put("categorie", budget.get().getCategory().getTitle());
                            responseBody.put("periode", period.get().getTitle());
                            responseBody.put("reliquat", budget.get().getRemainder());
-                           if (!notifications.isEmpty() && !Objects.equals(notifications.get(0).getContent(), "")){
+                           /*if (!notifications.isEmpty() && !Objects.equals(notifications.get(0).getContent(), "")){
                                responseBody.put("notification", notifications.get(0).getContent());
-                           }
+                           }*/
 
                            return ResponseEntity.created(location).body(responseBody);
                        }
@@ -96,13 +96,13 @@ public class ExpenseService {
                }
            }
            else {
-               return new ResponseEntity<>("Le reliquat du budget est 0", HttpStatus.BAD_REQUEST);
+               return new ResponseEntity<>("Le reliquat du budget a atteint le seuil!", HttpStatus.BAD_REQUEST);
            }
         }
         else{
             return new  ResponseEntity<> ("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
-      
+
 
     }
 

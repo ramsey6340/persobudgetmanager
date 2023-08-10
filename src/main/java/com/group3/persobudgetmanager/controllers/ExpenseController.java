@@ -19,7 +19,7 @@ public class ExpenseController {
     ExpenseService expenseService;
 
     @Operation(summary = "Ajouter une nouvelle dépense")
-    @PostMapping(value = "users/{userId}/expenses")
+    @PostMapping(value = "users/{userId}/expenses", params = {"period","budget"})
     public ResponseEntity<Object> save(@Valid @RequestBody Expense expense, @PathVariable Long userId, @RequestParam("period") Long period, @RequestParam("budget") Long budget){
         return expenseService.save(expense, userId, period, budget);
     }
