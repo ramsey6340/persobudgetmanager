@@ -3,7 +3,6 @@ package com.group3.persobudgetmanager.services;
 import com.group3.persobudgetmanager.models.*;
 import com.group3.persobudgetmanager.projections.ExpenseProjection;
 import com.group3.persobudgetmanager.repositories.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static java.lang.String.valueOf;
-
 @Service
-@Transactional
 public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
@@ -44,73 +40,87 @@ public class ExpenseService {
         List<Notification> notifications = notificationRepository.findAllByBudgetIdAndDeleteFalse(budgetId);
 
         if (user.isPresent() && budget.isPresent() && period.isPresent()) {
-            if (budget.get().getRemainder() <= budget.get().getAmount()) {
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                LocalDate startDate = LocalDate.parse(expense.getStartDate(), dateFormatter);
-                LocalDate endDate = LocalDate.parse(expense.getEndDate(), dateFormatter);
+            if(expense.getAmount()>0){
+                if (budget.get().getRemainder() <= budget.get().getAmount()) {
+                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate startDate;
+                    LocalDate endDate;
+                    try {
+                        startDate = LocalDate.parse(expense.getStartDate(), dateFormatter);
+                        endDate = LocalDate.parse(expense.getEndDate(), dateFormatter);
+                    }catch (DateTimeParseException e){
+                        return new ResponseEntity<>("Le format de la date n'est pas correct", HttpStatus.BAD_REQUEST);
+                    }
 
-                if (getNbDay(startDate, endDate) == period.get().getNbDay()) {
-                    if (expense.getAmount() <= budget.get().getRemainder()) {
-                        if (startDate.getMonth() == budget.get().getCreationDate().getMonth()) {
-                            if (isValidDate(expense.getStartDate()) && isValidDate(expense.getEndDate())) {
-                                expense.setUser(user.get());
-                                expense.setBudget(budget.get());
-                                expense.setPeriod(period.get());
-                                budget.get().setRemainder(budget.get().getRemainder() - expense.getAmount());
 
-                                // On enregistre la dépense
-                                Expense expenseCreated = expenseRepository.save(expense);
-                                Budget budgetCreated = budgetRepository.save(budget.get());
-                                // On récupère la localisation de la nouvelle dépense
-                                URI location = ServletUriComponentsBuilder.
-                                        fromCurrentRequest().
-                                        path("{id}").
-                                        buildAndExpand(expense.getId()).
-                                        toUri();
+                    if (getNbDay(startDate, endDate) == period.get().getNbDay()) {
+                        if (expense.getAmount() <= budget.get().getRemainder()) {
+                            if (startDate.getMonth() == budget.get().getCreationDate().getMonth()) {
+                                if (isValidDate(expense.getStartDate()) && isValidDate(expense.getEndDate())) {
+                                    expense.setUser(user.get());
+                                    expense.setBudget(budget.get());
+                                    expense.setPeriod(period.get());
+                                    budget.get().setRemainder(budget.get().getRemainder() - expense.getAmount());
 
-                                if (budgetCreated.getRemainder() <= budgetCreated.getAlertAmount()) {
-                                   if (notifications.isEmpty()){
-                                       // Enregistrement d'une notification
-                                       notifications.add(new Notification());
-                                   }
-                                   notifications.get(0).setDelete(false);
-                                   notifications.get(0).setBudget(budget.get());
-                                   notifications.get(0).setUser(user.get());
-                                   notifications.get(0).setContent("Alerte: Votre budget est maintenant de "+budget.get().getRemainder());
-                                   notifications.set(0, notificationRepository.save(notifications.get(0)));
+                                    // On enregistre la dépense
+                                    Expense expenseCreated = expenseRepository.save(expense);
+                                    Budget budgetCreated = budgetRepository.save(budget.get());
+                                    // On récupère la localisation de la nouvelle dépense
+                                    URI location = ServletUriComponentsBuilder.
+                                            fromCurrentRequest().
+                                            path("{id}").
+                                            buildAndExpand(expense.getId()).
+                                            toUri();
+
+                                    if (budgetCreated.getRemainder() <= budgetCreated.getAlertAmount()) {
+                                        if (notifications.isEmpty()){
+                                            // Enregistrement d'une notification
+                                            notifications.add(new Notification());
+                                        }
+                                        notifications.get(0).setDelete(false);
+                                        notifications.get(0).setBudget(budget.get());
+                                        notifications.get(0).setUser(user.get());
+                                        notifications.get(0).setContent("Alerte: Votre budget est maintenant de "+budget.get().getRemainder());
+                                        notifications.set(0, notificationRepository.save(notifications.get(0)));
+                                        //sendEmail(expenseCreated.getUser().getEmail(), "Alerte budget", notifications.get(0).getContent());
+
+                                    }
+
+                                    // Creation d'un body pour la réponse
+                                    Map<String, Object> responseBody = new HashMap<>();
+                                    responseBody.put("depense ID", expenseCreated.getId());
+                                    responseBody.put("depense montant", expenseCreated.getAmount());
+                                    responseBody.put("categorie", budget.get().getCategory().getTitle());
+                                    responseBody.put("periode", period.get().getTitle());
+                                    responseBody.put("reliquat", budget.get().getRemainder());
+                                    if (!notifications.isEmpty() && !Objects.equals(notifications.get(0).getContent(), "")){
+                                        responseBody.put("notification", notifications.get(0).getContent());
+                                    }
+
+                                    return ResponseEntity.created(location).body(responseBody);
                                 }
-
-                                // Creation d'un body pour la réponse
-                                Map<String, Object> responseBody = new HashMap<>();
-                                responseBody.put("depense ID", expenseCreated.getId());
-                                responseBody.put("depense montant", expenseCreated.getAmount());
-                                responseBody.put("categorie", budget.get().getCategory().getTitle());
-                                responseBody.put("periode", period.get().getTitle());
-                                responseBody.put("reliquat", budget.get().getRemainder());
-                               if (!notifications.isEmpty() && !Objects.equals(notifications.get(0).getContent(), "")){
-                                   responseBody.put("notification", notifications.get(0).getContent());
-                               }
-
-                                return ResponseEntity.created(location).body(responseBody);
+                                else {
+                                    return new ResponseEntity<>("La date de debut ou de fin est incorrecte", HttpStatus.NOT_FOUND);
+                                }
                             }
                             else {
-                                return new ResponseEntity<>("La date de debut ou de fin est incorrecte", HttpStatus.NOT_FOUND);
+                                return new ResponseEntity<>("Le mois du budget ne correspond pas au mois de la depense", HttpStatus.BAD_REQUEST);
                             }
                         }
                         else {
-                            return new ResponseEntity<>("Le mois du budget ne correspond pas au mois de la depense", HttpStatus.BAD_REQUEST);
+                            return new ResponseEntity<>("Le montant de la dépense est superieur au reliquat", HttpStatus.BAD_REQUEST);
                         }
                     }
                     else {
-                        return new ResponseEntity<>("Le montant de la dépense est superieur au reliquat", HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>("Le nombre de jour entre la date de debut et de fin est "+getNbDay(startDate, endDate)+" alors que celui de la periode est"+period.get().getNbDay(), HttpStatus.BAD_REQUEST);
                     }
                 }
                 else {
-                    return new ResponseEntity<>("Le nombre de jour entre la date de debut et de fin est "+getNbDay(startDate, endDate)+" alors que celui de la periode est"+period.get().getNbDay(), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("Le reliquat du budget est superieur au montant du budget", HttpStatus.BAD_REQUEST);
                 }
             }
-            else {
-                return new ResponseEntity<>("Le reliquat du budget est superieur au montant du budget", HttpStatus.BAD_REQUEST);
+            else{
+                return new ResponseEntity<>("Le montant doit être strictement superieur à 0", HttpStatus.NOT_FOUND);
             }
         }
         else{
@@ -182,24 +192,39 @@ public class ExpenseService {
 
     }
 
-    public ResponseEntity<Object> updatePatch (Long userId, Long expenseId, Map < String, Object > expenseMap){
+    public ResponseEntity<Object> updatePatch (Long userId, Long expenseId, Map<String, Object> expenseMap){
         Optional<Expense> expenseOptional = expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()) {
+            Budget budget = expenseOptional.get().getBudget();
             if (expenseMap.containsKey("amount")) {
-
-                Budget budget = expenseOptional.get().getBudget();
                 Double oldAmount = expenseOptional.get().getAmount();
                 Double newAmount = (Double) expenseMap.get("amount");
                 Double rectification = oldAmount - newAmount;
                 budget.setRemainder(budget.getRemainder() + rectification);
                 expenseOptional.get().setAmount((Double) expenseMap.get("amount"));
-                expenseRepository.save(expenseOptional.get());
-                budgetRepository.save(budget);
             }
             if (expenseMap.containsKey("description")) {
                 expenseOptional.get().setDescription((String) expenseMap.get("description"));
             }
-            return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
+            if(expenseMap.containsKey("startDate")){
+                if (isValidDate(expenseMap.get("startDate").toString())){
+                    expenseOptional.get().setStartDate(expenseMap.get("startDate").toString());
+                }
+                else {
+                    return new ResponseEntity<>("La date de debut est incorrecte", HttpStatus.BAD_REQUEST);
+                }
+            }
+            if(expenseMap.containsKey("endDate")){
+                if (isValidDate(expenseMap.get("endDate").toString())){
+                    expenseOptional.get().setStartDate(expenseMap.get("endDate").toString());
+                }
+                else {
+                    return new ResponseEntity<>("La date de fin est incorrecte", HttpStatus.BAD_REQUEST);
+                }
+            }
+            Expense expenseCreated = expenseRepository.save(expenseOptional.get());
+            budgetRepository.save(budget);
+            return ResponseEntity.ok(expenseCreated);
         } else {
             return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
@@ -210,18 +235,18 @@ public class ExpenseService {
     }
 
     // Methode pour verifier que le nombre de jours entre startDate et endDate est bien nbDay
-    Long getNbDay (LocalDate startDate, LocalDate endDate){
+    public Long getNbDay (LocalDate startDate, LocalDate endDate){
         return ChronoUnit.DAYS.between(startDate, endDate) + 1;
     }
 
 
     // Vérification si la date est valide
-    Boolean isValidDate (String date){
+    public Boolean isValidDate (String date){
         // Convertir la chaîne en objet LocalDate
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // On récupère les deux premiers caractères de la chaine
-        String dayInString = date.substring(0, 2);
+        // On récupère les deux derniers caractères de la chaine
+        String dayInString = date.substring(date.length() - 2);
         LocalDate localDate;
 
         // on convertit le jour en int

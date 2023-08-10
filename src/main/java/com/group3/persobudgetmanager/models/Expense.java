@@ -60,16 +60,19 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    //@JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    @JsonIgnore
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "budget_id")
-    @JsonIgnoreProperties(value = {"amount", "alertAmount", "title", "remainder", "creationDate"})
+    //@JsonIgnoreProperties(value = {"amount", "alertAmount", "title", "remainder", "creationDate"})
+    @JsonIgnore
     private Budget budget;
 
     @ManyToOne
     @JoinColumn(name = "periode_id")
-    @JsonIgnoreProperties(value = {"title", "description", "nbDay"})
+    //@JsonIgnoreProperties(value = {"title", "description", "nbDay"})
+    @JsonIgnore
     private Period period;
 }

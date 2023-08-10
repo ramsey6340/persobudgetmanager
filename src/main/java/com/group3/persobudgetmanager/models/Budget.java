@@ -51,11 +51,14 @@ public class Budget {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    //@JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    @JsonIgnore
     private User user;
+
     @ManyToOne
     @JoinColumn(name = "categorie_id")
-    @JsonIgnoreProperties(value = {"title", "description"})
+    //@JsonIgnoreProperties(value = {"title", "description"})
+    @JsonIgnore
     private Category category;
 
 }

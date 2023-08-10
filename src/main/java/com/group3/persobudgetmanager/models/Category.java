@@ -40,6 +40,7 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    //@JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    @JsonIgnore
     private User user;
 }
