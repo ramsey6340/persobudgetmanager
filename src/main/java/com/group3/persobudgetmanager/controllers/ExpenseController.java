@@ -50,7 +50,7 @@ public class ExpenseController {
     public ResponseEntity<Object> updatePatch(@PathVariable Long userId, @PathVariable Long expenseId,@Valid @RequestBody Map<String, Object> expenseMap){
         return expenseService.updatePatch(userId, expenseId, expenseMap);
     }
-    @Operation(summary = "Supprimer les depenses")
+    @Operation(summary = "Supprimer une depense")
     @DeleteMapping(value = "users/{userId}/expenses/{expenseId}")
     public ResponseEntity<String> delete(@PathVariable Long userId, @PathVariable Long expenseId){
         return expenseService.delete(expenseId, userId);

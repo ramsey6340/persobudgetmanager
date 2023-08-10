@@ -35,7 +35,7 @@ public class ExpenseService {
         Optional<Budget> budget = budgetRepository.findById(budgetId);
         Optional<Period> period = periodRepository.findById(periodId);
 
-        // On instancie la notification ici pour que je puisse y acceder en dehors des "if"
+        // On instancie la notification ici pour pouvoir y acceder en dehors des "if"
         List<Notification> notifications = notificationRepository.findAllByBudgetIdAndDeleteFalse(budgetId);
 
         if(user.isPresent() && budget.isPresent() && period.isPresent()){
@@ -102,6 +102,8 @@ public class ExpenseService {
         else{
             return new  ResponseEntity<> ("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
+      
+
     }
 
 
@@ -109,11 +111,13 @@ public class ExpenseService {
     public ResponseEntity<String> delete(Long expenseId, Long userId){
         Optional<Expense> expenseOptional=expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()){
-            //expenseRepository.delete(expenseOptional.get());
-            // Ajustement du reliquat pour lui ajouté le montant de la dépense supprimée
+
             Budget budget = expenseOptional.get().getBudget();
             budget.setRemainder(budget.getRemainder()+expenseOptional.get().getAmount());
             expenseOptional.get().setDelete(true);
+
+            expenseRepository.save(expenseOptional.get());
+            budgetRepository.save(budget);
             return ResponseEntity.ok("Suppression réussi!");
         }else{
             return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
@@ -143,18 +147,31 @@ public class ExpenseService {
     public ResponseEntity<Object> update(Long userId, Long expenseId, Expense expense) {
         Optional<Expense> expense1 =expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expense1.isPresent()){
+            Budget budget = expense1.get().getBudget();
+            Double oldAmount = expense1.get().getAmount();
+            Double newAmount = expense.getAmount();
+
+            Double rectification = oldAmount - newAmount;
+            budget.setRemainder(budget.getRemainder()+rectification);
+
+
             expense1.get().setAmount(expense.getAmount());
             expense1.get().setPeriod(expense.getPeriod());
             expense1.get().setCreationDate(expense.getCreationDate());
             expense1.get().setDescription(expense.getDescription());
 
-            // On modifie egalement le budget de la depense
+            budgetRepository.save(budget);
+            expenseRepository.save(expense1.get());
+
+           /* On modifie egalement le budget de la depense
             Double valueToAdd = expense1.get().getAmount()-expense.getAmount();
             Double newRemainder = valueToAdd+expense1.get().getBudget().getRemainder();
             expense1.get().getBudget().setRemainder(newRemainder);
             budgetRepository.save(expense1.get().getBudget());
+            */
             return ResponseEntity.ok(expenseRepository.save(expense1.get()));
-        }else{
+        }
+        else{
             return new ResponseEntity("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
         }
 
@@ -164,14 +181,15 @@ public class ExpenseService {
         Optional<Expense> expenseOptional = expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()){
             if (expenseMap.containsKey("amount")){
-                expenseOptional.get().setAmount((Double) expenseMap.get("amount"));
-                Double expenseAmount = (Double) expenseMap.get("amount");
 
-                // On modifie également le budget de la depense
-                Double valueToAdd = expenseOptional.get().getAmount()-expenseAmount;
-                Double newRemainder = valueToAdd+expenseOptional.get().getBudget().getRemainder();
-                expenseOptional.get().getBudget().setRemainder(newRemainder);
-                budgetRepository.save(expenseOptional.get().getBudget());
+                Budget budget = expenseOptional.get().getBudget();
+                Double oldAmount = expenseOptional.get().getAmount();
+                Double newAmount = (Double) expenseMap.get("amount");
+                Double rectification = oldAmount - newAmount;
+                budget.setRemainder(budget.getRemainder()+rectification);
+                expenseOptional.get().setAmount((Double) expenseMap.get("amount"));
+                expenseRepository.save(expenseOptional.get());
+                budgetRepository.save(budget);
             }
             if (expenseMap.containsKey("description")){
                 expenseOptional.get().setDescription((String) expenseMap.get("description"));
@@ -189,5 +207,6 @@ public class ExpenseService {
         Long getNbDay(LocalDate startDate, LocalDate endDate) {
             return ChronoUnit.DAYS.between(startDate, endDate)+1;
         }
+
     }
 
