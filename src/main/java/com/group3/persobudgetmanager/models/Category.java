@@ -26,7 +26,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Pas null") //{NotNull.category.title}
+    @NotNull(message = "{NotNull.category.title")
     @Size(min = 1, max = 30, message = "{Size.category.title}")
     @Column(name = "titre")
     private String title; // Le titre de la catégorie. Exemple : Loyer

@@ -2,9 +2,7 @@ package com.group3.persobudgetmanager.services;
 import com.group3.persobudgetmanager.Exception.NotFoundException;
 import com.group3.persobudgetmanager.models.User;
 import com.group3.persobudgetmanager.repositories.*;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.AbstractPersistable_;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,8 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 
 @Service
@@ -30,12 +26,11 @@ public class UserService {
     @Autowired
     private PeriodRepository periodRepository;
 
+
     public ResponseEntity<User> createUser(User user) {
-        User user1 =userRepository.save(user);
-        return new ResponseEntity<>(user1, HttpStatus.CREATED);
-
-
+        return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
     }
+
     public List<User> getUsers(){
         return userRepository.findAllByDeleteFalse();
     }
@@ -43,7 +38,6 @@ public class UserService {
     public Optional<User> getUser(Long id){
         return userRepository.findByIdAndDeleteFalse(id);
     }
-
 
     public User modifier(Long userId, User user) {
         return userRepository.findByIdAndDeleteFalse(userId)
@@ -53,10 +47,10 @@ public class UserService {
                     u.setLogin(user.getLogin());
                     u.setPassword(user.getPassword());
                     return userRepository.save(u);
-                }).orElseThrow(()->new RuntimeException("User not found with ID:" +id));
+                }).orElseThrow(()->new NotFoundException("Utilisateur non trouvé"));
     }
 
-    public String delete (Long id){
+    public ResponseEntity<Object> delete (Long id){
         Optional<User> userOptional=userRepository.findByIdAndDeleteFalse(id);
         if (userOptional.isPresent()) {
             userOptional.get().setDelete(true);
@@ -80,24 +74,21 @@ public class UserService {
                 periodRepository.save(p);
             });
             userRepository.save(userOptional.get());
-            return "Suppression reussie";
+            return ResponseEntity.ok("Suppression reussie");
         }
-        return "Utilisateur non trouvé";
+        throw new NotFoundException("cet utilisateur n'existe pas");
     }
 
 
     public ResponseEntity<User> partialUpdateUser(Long id, Map<String, Object> updates) {
-        User user = userRepository.findByIdAndDeleteFalse(id).orElse(null);
-
-        if (user != null) {
+        Optional<User> user = userRepository.findByIdAndDeleteFalse(id);
+        if (user.isPresent()) {
             // Appliquer les mises à jour fournies dans le Map
-            applyPartialUpdates(user, updates);
-            User user1 =userRepository.save(user);
-            return new ResponseEntity<>(user1, HttpStatus.OK);
-
+            applyPartialUpdates(user.get(), updates);
+            User userCreated =userRepository.save(user.get());
+            return new ResponseEntity<>(userCreated, HttpStatus.OK);
         }
-
-        return null;
+        throw new NotFoundException("cet utilisateur n'existe pas");
     }
 
     private void applyPartialUpdates(User user, Map<String, Object> updates) {
@@ -120,9 +111,9 @@ public class UserService {
     }
 
     public ResponseEntity<User> login(String email, String password) {
-        User user = userRepository.findByEmailAndPassword(email, password);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+        Optional<User> user = userRepository.findByEmailAndPassword(email, password);
+        if (user.isPresent()) {
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
         }
        throw new NotFoundException("cet utilisateur n'existe pas");
     }

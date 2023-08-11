@@ -1,5 +1,6 @@
 package com.group3.persobudgetmanager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -24,39 +25,46 @@ public class User {
     private Long id;
 
 
-    @Size(min = 2, max = 20, message = "")
-    @NotNull(message = "")
-    @NotBlank(message = "Le nom ne peut pas etre vide")
+    @Size(min = 2, max = 20, message = "{Size.user.fullName}")
+    @NotNull(message = "{NotNull.user.fullName}")
+    @Column(name="nom_complet")
     private String fullName;
 
-    @Size
-    @NotEmpty(message = "Email cannot be empty")
-    @NotBlank(message = "L'email ne peut pas être vide")
-    @Email(message = "L'email doit être une adresse email valide")
+    @Size(min = 10, max = 30, message = "{Size.user.email}")
+    @NotNull(message = "{NotNull.user.email}")
+    @Email(message = "{Email.user.email}")
     private String email;
 
-    @NotNull
-    @Size(min=2, max = 10)
+    @NotNull(message = "{NotNull.user.login}")
+    @Size(min=2, max = 10, message = "{Size.user.login}")
     private String login;
 
-
     @NotNull
-    @NotBlank(message = "Le mot de passe ne peut pas être vide")
-    @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
+    @JsonIgnore
+    @Column(name = "supprimer")
+    private boolean delete = false;
+
+    @NotNull(message = "{NotNull.user.password}")
+    @Size(min = 4, message = "{Size.user.password}")
     private String password;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Period> periods = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Notification> notifications = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Expense> expenses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Category> categories = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Budget> budgets = new ArrayList<>();
 }

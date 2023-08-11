@@ -1,6 +1,4 @@
 package com.group3.persobudgetmanager.exceptions;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,15 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
@@ -66,13 +57,8 @@ public class CustomException{
             String errorMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
             errorMessages.add(errorMessage);
         }
-
         return errorMessages;
     }
-
-
-
-
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -84,7 +70,6 @@ public class CustomException{
                 ex.getMessage(),
                 request.getDescription(false)
         );
-
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -98,7 +83,6 @@ public class CustomException{
                 ex.getMessage(),
                 request.getDescription(false)
         );
-
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -112,7 +96,6 @@ public class CustomException{
                 ex.getMessage(),
                 request.getDescription(false)
         );
-
         return new ResponseEntity<>(error, HttpStatus.NO_CONTENT);
     }
 
@@ -127,10 +110,8 @@ public class CustomException{
                 ex.getMessage(),
                 request.getDescription(false)
         );
-
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
-
     @ExceptionHandler(BadRequest.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> badRequest(BadRequest ex, WebRequest request) {
@@ -142,10 +123,8 @@ public class CustomException{
                 ex.getMessage(),
                 request.getDescription(false)
         );
-
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-
     public static Object badRequest() {
         // Créer le corps de la réponse avec le format souhaité
         Map<String, Object> responseBody = new HashMap<>();
@@ -153,7 +132,6 @@ public class CustomException{
         responseBody.put("status", HttpStatus.BAD_REQUEST.value());
         responseBody.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
         responseBody.put("message", ErrorMessage.badRequest);
-
         return responseBody ;
     }
 }

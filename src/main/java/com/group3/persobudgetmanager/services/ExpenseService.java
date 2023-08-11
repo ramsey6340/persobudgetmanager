@@ -67,6 +67,15 @@ public class ExpenseService {
                                     // On enregistre la dépense
                                     Expense expenseCreated = expenseRepository.save(expense);
                                     Budget budgetCreated = budgetRepository.save(budget.get());
+
+                                    // Envoie d'un email pour notifier l'utilisateur
+                                    emailService.sendSimpleMail(new EmailDetails(
+                                                    expenseCreated.getUser().getEmail(),
+                                                    "Alerte de budget",
+                                                    "Vous avez fait une dépense de " + expenseCreated.getAmount()+", il vous reste un budget de " + budgetCreated.getRemainder()
+                                            )
+                                    );
+
                                     // On récupère la localisation de la nouvelle dépense
                                     URI location = ServletUriComponentsBuilder.
                                             fromCurrentRequest().
@@ -176,7 +185,6 @@ public class ExpenseService {
     public ResponseEntity<Object> update(Long userId, Long expenseId, Expense expense) {
         Optional<Expense> expense1 =expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expense1.isPresent()){
-
             Budget budget = expense1.get().getBudget();
             Double oldAmount = expense1.get().getAmount();
             Double newAmount = expense.getAmount();
@@ -280,7 +288,6 @@ public class ExpenseService {
         Optional<Expense> expenseOptional = expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()) {
             expenseOptional.get().setDelete(false);
-
             return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
         } else {
             return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);

@@ -42,16 +42,10 @@ public class Expense {
 
     @Column(name = "date_debut")
     @NotNull(message = "{NotNull.expense.startDate}")
-    //@DateTimeFormat(pattern = "yyyy-MM-dd") // le format de la date
-    //@ValidDate(message = "La date de debut n'est pas valide")
-    //@JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private String startDate;
 
     @Column(name = "date_fin")
     @NotNull(message = "{NotNull.expense.endDate}")
-    //@DateTimeFormat(pattern = "yyyy-MM-dd") // le format de la date
-    //@ValidDate(message = "La date de fin n'est pas valide")
-    //@JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private String endDate;
 
     @Column(name = "supprimer")
