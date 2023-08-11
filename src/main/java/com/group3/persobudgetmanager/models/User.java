@@ -34,20 +34,23 @@ public class User {
     @Size(min = 10, max = 30, message = "{Size.user.email}")
     @NotNull(message = "{NotNull.user.email}")
     @Email(message = "{Email.user.email}")
+    @Column(nullable = false)
     private String email;
 
-    @NotNull(message = "{NotNull.user.fullName}")
-    @Size(min=2, max = 10, message = "{Size.user.fullName}")
+    @NotNull(message = "{NotNull.user.login}")
+    @Size(min=2, max = 10, message = "{Size.user.login}")
+    @Column(unique = true, nullable = false)
     private String login;
 
-    @Column(name = "mot_de_passe")
+    @Column(name = "mot_de_passe" , nullable = false)
     @NotNull(message = "{NotNull.user.password}")
-    @Size(min = 4, message = "{Size.user.fullName}")
+    @Size(min = 4, message = "{Size.user.password}")
     private String password;
 
     @Column(name = "supprimer")
     @JsonIgnore
     private boolean delete=false;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)

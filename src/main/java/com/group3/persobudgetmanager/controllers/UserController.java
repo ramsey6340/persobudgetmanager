@@ -3,10 +3,13 @@ package com.group3.persobudgetmanager.controllers;
 import com.group3.persobudgetmanager.models.User;
 import com.group3.persobudgetmanager.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+@Valid
 
 @RestController
 
@@ -25,20 +29,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Operation(summary = "")
+
+
+
     @PostMapping("users")
     public ResponseEntity<User> create(@Valid @RequestBody User user){
+        if (user.getEmail().isEmpty()){
+
+            return null;
+        }
         return userService.createUser(user);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-        return ResponseEntity.badRequest().body(errors);
-    }
 
 
     @GetMapping("users")
@@ -47,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("users/{id}")
-    public Optional<User> getUser(@PathVariable Long id){
+    public Optional<User> getUser(@Valid @PathVariable Long id){
         return userService.getUser(id);
     }
 
@@ -57,14 +59,19 @@ public class UserController {
     }
 
     @DeleteMapping("users/{id}")
-    public String delete(@PathVariable Long id){
+    public String delete(@Valid @PathVariable Long id){
         return userService.delete(id);
     }
 
     @PatchMapping("users/{id}")
-    public ResponseEntity<User> partialUpdateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<User> partialUpdateUser( @Valid @PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return userService.partialUpdateUser(id, updates);
 
+    }
+
+    @PostMapping("users/login")
+    public ResponseEntity <User> login(@Valid @RequestParam String email, @RequestParam String  password) {
+        return userService.login(email, password);
     }
 
 
