@@ -15,6 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
 @NoArgsConstructor
 @Table(name = "categorie")
+
 public class Category {
     /**
      * La classe Category répresente la catégorie de dépense.
@@ -39,6 +40,7 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    //@JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    @JsonIgnore
     private User user;
 }

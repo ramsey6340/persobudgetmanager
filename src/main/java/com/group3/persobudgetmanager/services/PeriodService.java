@@ -108,4 +108,16 @@ public class PeriodService {
     public List<Period> getPeriodsByNbDay(int nbDay) {
         return periodRepository.findAllByNbDayAndDeleteFalse(nbDay);
     }
+
+    // Restauration d'une periode supprimé
+    public ResponseEntity<Object> restorePeriod(Long userId, Long periodId) {
+        Optional<Period> periodOptional = periodRepository.findByIdAndUserIdAndDeleteFalse(periodId, userId);
+        if(periodOptional.isPresent()){
+            periodOptional.get().setDelete(false);
+            Period period = periodRepository.save(periodOptional.get());
+            return new ResponseEntity<>(period, HttpStatus.OK);
+        }
+        else
+            throw new NotFoundException(ErrorMessage.notFound);
+    }
 }

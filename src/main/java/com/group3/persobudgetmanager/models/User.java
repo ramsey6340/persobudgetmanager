@@ -1,21 +1,18 @@
 package com.group3.persobudgetmanager.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
 @NoArgsConstructor
-@DynamicUpdate
+@AllArgsConstructor
+@Data
 @Table(name = "utilisateur")
 public class User {
     /**
@@ -26,46 +23,40 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom_complet")
-    @Size(min = 2, max = 20, message = "{Size.user.fullName}")
-    @NotNull(message = "{NotNull.user.fullName}")
+
+    @Size(min = 2, max = 20, message = "")
+    @NotNull(message = "")
+    @NotBlank(message = "Le nom ne peut pas etre vide")
     private String fullName;
 
-    @Size(min = 10, max = 30, message = "{Size.user.email}")
-    @NotNull(message = "{NotNull.user.email}")
-    @Email(message = "{Email.user.email}")
+    @Size
+    @NotEmpty(message = "Email cannot be empty")
+    @NotBlank(message = "L'email ne peut pas être vide")
+    @Email(message = "L'email doit être une adresse email valide")
     private String email;
 
-    @NotNull(message = "{NotNull.user.fullName}")
-    @Size(min=2, max = 10, message = "{Size.user.fullName}")
+    @NotNull
+    @Size(min=2, max = 10)
     private String login;
 
-    @Column(name = "mot_de_passe")
-    @NotNull(message = "{NotNull.user.password}")
-    @Size(min = 4, message = "{Size.user.fullName}")
+
+    @NotNull
+    @NotBlank(message = "Le mot de passe ne peut pas être vide")
+    @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
     private String password;
 
-    @Column(name = "supprimer")
-    @JsonIgnore
-    private boolean delete=false;
-
-    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Period> periods = new ArrayList<>();
 
-    @JsonIgnore
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    List<Notification> notifications = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Expense> expenses = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Category> categories = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Budget> budgets = new ArrayList<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    List<Notification> notifications = new ArrayList<>();
 }

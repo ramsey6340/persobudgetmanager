@@ -1,5 +1,6 @@
 package com.group3.persobudgetmanager.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 //import com.group3.persobudgetmanager.validators.annotations.ValidDate;
@@ -43,13 +44,15 @@ public class Expense {
     @NotNull(message = "{NotNull.expense.startDate}")
     //@DateTimeFormat(pattern = "yyyy-MM-dd") // le format de la date
     //@ValidDate(message = "La date de debut n'est pas valide")
-    private LocalDate startDate;
+    //@JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    private String startDate;
 
     @Column(name = "date_fin")
     @NotNull(message = "{NotNull.expense.endDate}")
     //@DateTimeFormat(pattern = "yyyy-MM-dd") // le format de la date
     //@ValidDate(message = "La date de fin n'est pas valide")
-    private LocalDate endDate;
+    //@JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    private String endDate;
 
     @Column(name = "supprimer")
     @JsonIgnore
@@ -57,16 +60,19 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    //@JsonIgnoreProperties(value = {"fullName", "email", "login", "password"})
+    @JsonIgnore
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "budget_id")
-    @JsonIgnoreProperties(value = {"amount", "alertAmount", "title", "remainder", "creationDate"})
+    //@JsonIgnoreProperties(value = {"amount", "alertAmount", "title", "remainder", "creationDate"})
+    @JsonIgnore
     private Budget budget;
 
     @ManyToOne
     @JoinColumn(name = "periode_id")
-    @JsonIgnoreProperties(value = {"title", "description", "nbDay"})
+    //@JsonIgnoreProperties(value = {"title", "description", "nbDay"})
+    @JsonIgnore
     private Period period;
 }

@@ -34,7 +34,7 @@ public class CategoryService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()){
             Optional<Category> categoryExist = categoryRepository.findByUserIdAndTitleAndDeleteFalse(userId, category.getTitle());
-            if (categoryExist.isEmpty()){ // Si une catégorie du même nom n'existe pas, on peut créer la catégorie
+            if (categoryExist.isPresent()){ // Si une catégorie du même nom n'existe pas, on peut créer la catégorie
 
                 category.setUser(user.get());
                 categoryRepository.save(category);
@@ -145,5 +145,17 @@ public class CategoryService {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setLocation(location);
         return new ResponseEntity<>(existingCategory, responseHeaders,HttpStatus.OK);
+    }
+
+    // Restauration d'une categorie supprimé
+    public ResponseEntity<Object> restoreCategory(Long userId, Long categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
+        if (categoryOptional.isPresent()){
+            categoryOptional.get().setDelete(false);
+            return ResponseEntity.ok(categoryRepository.save(categoryOptional.get()));
+        }
+        else {
+            throw new NotFoundException(ErrorMessage.notFound);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.group3.persobudgetmanager.controllers;
 import com.group3.persobudgetmanager.models.Category;
 import com.group3.persobudgetmanager.projections.CategoryProjection;
 import com.group3.persobudgetmanager.services.CategoryService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class CategoryController {
         return categoryService.getCategoriesByUser(userId);
     }
 
-    @Operation(summary = "Obtenir les catégories supprimes d'un utilisateur")
+    @Operation(summary = "Afficher les catégories supprimes d'un utilisateur")
     @GetMapping("users/{userId}/categories/trash")
     public List<CategoryProjection> getCategoriesByUserTrash(@PathVariable Long userId) {
         return categoryService.getCategoriesByUserTrash(userId);
@@ -40,6 +41,12 @@ public class CategoryController {
     @GetMapping("users/{userId}/categories/{categoryId}")
     public ResponseEntity<Object> getCategory(@PathVariable Long userId, @PathVariable Long categoryId) {
         return categoryService.getCategory(userId, categoryId);
+    }
+
+    @Operation(summary = "Obtenir une catégorie pour un utilisateur")
+    @GetMapping("users/{userId}/categories/{categoryId}/restore")
+    public ResponseEntity<Object> restoreCategory(@PathVariable Long userId, @PathVariable Long categoryId) {
+        return categoryService.restoreCategory(userId, categoryId);
     }
 
     @Operation(summary = "Obternir les catégories d'un utilisateur par sa description")

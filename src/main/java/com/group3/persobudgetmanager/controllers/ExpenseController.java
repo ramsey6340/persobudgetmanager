@@ -40,6 +40,11 @@ public class ExpenseController {
     public ResponseEntity<Object> findById(@PathVariable Long userId, @PathVariable Long expenseId){
         return expenseService.findById(userId, expenseId);
     }
+    @Operation(summary = "Restauration d'une dépense supprimé")
+    @GetMapping("users/{userId}/expenses/{expenseId}/restore")
+    public ResponseEntity<Object> restoreExpense(@PathVariable Long userId, @PathVariable Long expenseId){
+        return expenseService.restoreExpense(userId, expenseId);
+    }
     @Operation(summary = "Modifier une dépense")
     @PutMapping(value = "users/{userId}/expenses/{expenseId}")
     public ResponseEntity<Object> update(@PathVariable Long userId, @PathVariable Long expenseId,@Valid @RequestBody Expense expense){

@@ -105,4 +105,15 @@ public class NotificationService {
     public List<Notification> getNotificationsByUser(Long userId) {
         return notificationRepository.findAllByUserIdAndDeleteFalse(userId);
     }
+
+    public ResponseEntity<Object> restoreNotification(Long userId, Long notificationId) {
+        Optional<Notification> notificationOptional = notificationRepository.findByIdAndUserIdAndDeleteFalse(notificationId, userId);
+        if(notificationOptional.isPresent()) {
+            notificationOptional.get().setDelete(false);
+            Notification notification = notificationRepository.save(notificationOptional.get());
+            return new ResponseEntity<>(notification, HttpStatus.OK);
+        }
+        else
+            throw new NotFoundException(ErrorMessage.notFound);
+    }
 }

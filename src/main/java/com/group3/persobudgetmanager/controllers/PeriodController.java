@@ -42,6 +42,12 @@ public class PeriodController {
         return periodService.getPeriodByUser(userId, periodId);
     }
 
+    @Operation(summary = "Récuperer une periode d'un utilisateur")
+    @GetMapping("users/{userId}/periods/{periodId}/restore")
+    public ResponseEntity<Object> restorePeriod(@PathVariable Long userId, @PathVariable Long periodId) {
+        return periodService.restorePeriod(userId, periodId);
+    }
+
     @Operation(summary = "Mise à jour complete d'une periode")
     @PutMapping("users/{userId}/periods/{periodId}")
     public ResponseEntity<Object> updatePeriodByUser(@PathVariable Long userId, @PathVariable Long periodId, @Valid @RequestBody Period period) {
