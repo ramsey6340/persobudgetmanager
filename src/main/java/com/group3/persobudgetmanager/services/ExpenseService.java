@@ -147,6 +147,7 @@ public class ExpenseService {
     public ResponseEntity<Object> update(Long userId, Long expenseId, Expense expense) {
         Optional<Expense> expense1 =expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expense1.isPresent()){
+
             Budget budget = expense1.get().getBudget();
             Double oldAmount = expense1.get().getAmount();
             Double newAmount = expense.getAmount();

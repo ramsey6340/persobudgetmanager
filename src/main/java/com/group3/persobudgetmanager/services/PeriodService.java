@@ -1,6 +1,5 @@
 package com.group3.persobudgetmanager.services;
 
-import com.group3.persobudgetmanager.exceptions.CustomException;
 import com.group3.persobudgetmanager.exceptions.ErrorMessage;
 import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.models.Period;
