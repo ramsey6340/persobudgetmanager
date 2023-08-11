@@ -29,6 +29,8 @@ public class ExpenseService {
     private PeriodRepository periodRepository;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    EmailServiceImpl emailService;
 
     //la méthode du service pour ajouter une nouvelle dépense
     public ResponseEntity<Object> save(Expense expense, Long userId, Long periodId, Long budgetId) {
@@ -82,7 +84,12 @@ public class ExpenseService {
                                         notifications.get(0).setUser(user.get());
                                         notifications.get(0).setContent("Alerte: Votre budget est maintenant de "+budget.get().getRemainder());
                                         notifications.set(0, notificationRepository.save(notifications.get(0)));
-                                        //sendEmail(expenseCreated.getUser().getEmail(), "Alerte budget", notifications.get(0).getContent());
+                                        emailService.sendSimpleMail(new EmailDetails(
+                                                expenseCreated.getUser().getEmail(),
+                                                "Alerte de budget",
+                                                "Votre budget est maintenant de " + budget.get()
+                                                )
+                                        );
 
                                     }
 
@@ -273,6 +280,7 @@ public class ExpenseService {
         Optional<Expense> expenseOptional = expenseRepository.findByIdAndUserId(expenseId, userId);
         if (expenseOptional.isPresent()) {
             expenseOptional.get().setDelete(false);
+
             return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
         } else {
             return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
