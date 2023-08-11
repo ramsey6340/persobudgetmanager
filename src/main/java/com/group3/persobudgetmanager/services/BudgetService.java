@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,6 +129,31 @@ public class BudgetService {
     public List<Budget> getBudgetByAttribut(Long userId, Double montant, Double alertMontant, String titre, Long categorie) {
         return budgetRepository.findByUserIdAndAmountOrAlertAmountOrTitleOrCategoryId
                 (userId,montant, alertMontant, titre,categorie);
+    }
+
+    public ResponseEntity<Object> transferBudget(Long userId, Long budgetId1, Long budgetId2) {
+        Optional<Budget> budgetOptional1 = budgetRepository.findByUserIdAndId(userId, budgetId1);
+        Optional<Budget> budgetOptional2 = budgetRepository.findByUserIdAndId(userId, budgetId2);
+
+        if (budgetOptional1.isPresent() && budgetOptional2.isPresent()){
+            if(budgetOptional2.get().getCreationDate().getMonth().getValue()>=LocalDate.now().getMonth().getValue()
+                    && budgetOptional2.get().getCreationDate().getYear()>=LocalDate.now().getYear()){
+                budgetOptional2.get().setRemainder(budgetOptional2.get().getRemainder()+budgetOptional1.get().getRemainder());
+                budgetOptional2.get().setAmount(budgetOptional2.get().getAmount()+budgetOptional1.get().getRemainder());
+                budgetOptional1.get().setRemainder(0.0);
+
+                Budget budget1 = budgetRepository.save(budgetOptional1.get());
+                Budget budget2 = budgetRepository.save(budgetOptional2.get());
+                List<Budget> listBudget = new ArrayList<>();
+                listBudget.add(budget1);
+                listBudget.add(budget2);
+                return ResponseEntity.ok(listBudget);
+            }
+            else {
+                return new ResponseEntity<>("Le budget de destination est dépassé.\nChoisissez un budget avec un mois valide", HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
     }
 }
 

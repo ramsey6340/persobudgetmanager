@@ -266,4 +266,15 @@ public class ExpenseService {
             return false;
         }
     }
+
+    // Méthode de restauration d'une dépense supprimée
+    public ResponseEntity<Object> restoreExpense(Long userId, Long expenseId) {
+        Optional<Expense> expenseOptional = expenseRepository.findByIdAndUserId(expenseId, userId);
+        if (expenseOptional.isPresent()) {
+            expenseOptional.get().setDelete(false);
+            return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
+        } else {
+            return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+        }
+    }
 }

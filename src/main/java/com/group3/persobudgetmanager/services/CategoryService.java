@@ -146,4 +146,16 @@ public class CategoryService {
         responseHeaders.setLocation(location);
         return new ResponseEntity<>(existingCategory, responseHeaders,HttpStatus.OK);
     }
+
+    // Restauration d'une categorie supprimé
+    public ResponseEntity<Object> restoreCategory(Long userId, Long categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findByIdAndUserIdAndDeleteFalse(categoryId, userId);
+        if (categoryOptional.isPresent()){
+            categoryOptional.get().setDelete(false);
+            return ResponseEntity.ok(categoryRepository.save(categoryOptional.get()));
+        }
+        else {
+            throw new NotFoundException(ErrorMessage.notFound);
+        }
+    }
 }

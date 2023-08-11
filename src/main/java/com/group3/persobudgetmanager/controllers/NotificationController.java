@@ -48,10 +48,16 @@ public class NotificationController {
         return notificationService.getNotificationsForUserTrash(userId);
     }
 
-    @Operation(summary = "Récuperer une notification d'un utilisateur")
+    @Operation(summary = "Afficher une notification d'un utilisateur")
     @GetMapping("users/{userId}/notifications/{notificationId}")
     public ResponseEntity<Object> getNotificationForUser(@PathVariable Long userId, @PathVariable Long notificationId) {
         return notificationService.getNotificationForUser(userId, notificationId);
+    }
+
+    @Operation(summary = "Restauration d'une notification d'un utilisateur")
+    @GetMapping("users/{userId}/notifications/{notificationId}/restore")
+    public ResponseEntity<Object> restoreNotification(@PathVariable Long userId, @PathVariable Long notificationId) {
+        return notificationService.restoreNotification(userId, notificationId);
     }
 
     @Operation(summary = "Suppression d'une notification")

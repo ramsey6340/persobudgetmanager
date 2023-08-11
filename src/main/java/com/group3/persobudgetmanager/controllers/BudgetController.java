@@ -31,7 +31,7 @@ public class BudgetController {
 
     }
 
-    @Operation(summary = "Récuperer tous les budget supprimes d'un utilisateur")
+    @Operation(summary = "Affichage de tous les budget supprimes d'un utilisateur")
     @GetMapping("users/{userId}/budgets/trash")
     public List<BudgetProjection> getAllBudgetsTrash(@PathVariable Long userId){
         return budgetService.getAllBudgetsTrash(userId);
@@ -41,6 +41,12 @@ public class BudgetController {
     @GetMapping("users/{userId}/budgets/{budgetId}")
     public Optional<BudgetProjection> getBudgetById(@PathVariable Long userId, @PathVariable Long budgetId){
         return budgetService.getBudgetByIdAndUserId(userId, budgetId);
+    }
+
+    @Operation(summary = "Transferer le reliquat d'un budget à un autre budget")
+    @GetMapping("users/{userId}/budgets/transfer/{budgetId1}/to/{budgetId2}")
+    public ResponseEntity<Object> transferBudget(@PathVariable Long userId, @PathVariable Long budgetId1, @PathVariable Long budgetId2){
+        return budgetService.transferBudget(userId, budgetId1, budgetId2);
     }
 
     @Operation(summary = "Modifier un Budget")
