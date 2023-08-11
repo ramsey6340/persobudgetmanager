@@ -4,6 +4,7 @@ import java.io.File;
 
 
 import com.group3.persobudgetmanager.models.EmailDetails;
+import com.group3.persobudgetmanager.repositories.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
