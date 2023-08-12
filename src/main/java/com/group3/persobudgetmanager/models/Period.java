@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
@@ -32,6 +34,9 @@ public class Period {
 
     @Size(min = 1, max = 200, message = "{Size.period.description}")
     private String description; // une description pour le type de période
+
+    @Column(name = "date_creation")
+    private LocalDate creationDate=LocalDate.now();
 
     @Column(name = "nb_jour")
     @Min(value = 1, message = "{Min.period.nbDay}")

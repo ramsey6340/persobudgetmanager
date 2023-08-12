@@ -43,6 +43,14 @@ public class Budget {
     @Column(name = "date_creation")
     private LocalDate creationDate=LocalDate.now();
 
+    @Column(name = "date_debut")
+    @NotNull(message = "{NotNull.budget.startDate}")
+    private String startDate;
+
+    @Column(name = "date_fin")
+    //@NotNull(message = "{NotNull.budget.endDate}")
+    private String endDate;
+
     @Column(name = "supprimer")
     @JsonIgnore
     private boolean delete=false;

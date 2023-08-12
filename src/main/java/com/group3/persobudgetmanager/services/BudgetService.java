@@ -7,13 +7,18 @@ import com.group3.persobudgetmanager.projections.BudgetProjection;
 import com.group3.persobudgetmanager.repositories.BudgetRepository;
 import com.group3.persobudgetmanager.repositories.CategoryRepository;
 import com.group3.persobudgetmanager.repositories.UserRepository;
+import com.group3.persobudgetmanager.tools.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,25 +42,59 @@ public class BudgetService {
         double montant = budget.getAmount();
         double montantAlert = budget.getAlertAmount();
 
-        //Vérification si les deux montants sont null
-        if(montant == 0.0 || montantAlert == 0.0){
-            return ResponseEntity.ok( "Le montant et le montant alerte  doivent être renseignés");
+        if((montant<=0 || montantAlert<=0) || (montantAlert>montant)){
+            return new ResponseEntity<>("La valeur du montant ou du montant d'alerte est incorrecte", HttpStatus.BAD_REQUEST);
         }
-        //Vérification si les deux montants ne sont pas négatifs
-        if (montant < 0.0 || montantAlert < 0.0){
-            return ResponseEntity.ok("veillez renseignez des montants positifs") ;
-        }
-        if(montantAlert > montant){
-            return ResponseEntity.ok("Le montant alerte ne doit pas être supérieur au montant");
-        }
-
 
         if (user.isPresent() && category.isPresent()){
-            budget.setUser(user.get());
-            budget.setRemainder(budget.getAmount());
-            budget.setCategory(category.get());
-            budgetRepository.save(budget) ;
-            return ResponseEntity.ok("budget enregistré avec succès");
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate startDate;
+            LocalDate endDate;
+            try {
+                startDate = LocalDate.parse(budget.getStartDate(), dateFormatter);
+                // Vérification si la date de fin est null. Si oui on calcule automatiquement la date de fin
+                if (budget.getEndDate() == null){
+                    // Calcule de la date de fin qui est : startDate+30 jours,
+                    // le nombre de jours entre startDate et endDate sera donc 31, le premier jour de startDate est compté
+                    endDate = startDate.plusDays(30);
+                    // Mise à jour de la date de fin
+                    budget.setEndDate(endDate.toString());
+                }
+                else{
+                    endDate = LocalDate.parse(budget.getEndDate(), dateFormatter);
+                }
+            }catch (DateTimeParseException e){
+                return new ResponseEntity<>("Le format de la date n'est pas correct", HttpStatus.BAD_REQUEST);
+            }
+
+            Optional<Budget> budgetExist = budgetRepository.findAllByUserIdAndCategoryIdAndStartDateAndEndDate(
+                    userId, categoryId, budget.getStartDate(), budget.getEndDate());
+            if (budgetExist.isPresent()){
+                return new ResponseEntity<>("Un budget avec la même date et même catégorie existe déjà", HttpStatus.BAD_REQUEST);
+            }
+
+            if (Tools.getNbDay(startDate, endDate) <=31){
+                if (Tools.isValidDate(budget.getStartDate()) && Tools.isValidDate(budget.getEndDate())){
+                    budget.setUser(user.get());
+                    budget.setRemainder(budget.getAmount());
+                    budget.setCategory(category.get());
+                    Budget budgetCreated = budgetRepository.save(budget) ;
+
+                    URI location = ServletUriComponentsBuilder.
+                            fromCurrentRequest().
+                            path("{id}").
+                            buildAndExpand(budgetCreated.getId()).
+                            toUri();
+                    return ResponseEntity.created(location).body(budgetCreated);
+                }
+                else{
+                    return new ResponseEntity<>("Le format de la date n'est pas correct", HttpStatus.BAD_REQUEST);
+                }
+            }
+            else{
+                return new ResponseEntity<>("Le nombre de jours du budget ne doit pas dépasser 31", HttpStatus.BAD_REQUEST);
+            }
         }
         return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
     }
@@ -75,44 +114,64 @@ public class BudgetService {
         return budgetRepository.findBudgetWithIdAndUser(budgetId, userId);
     }
 
-    public Object updateBudget(Long userId, Long budgetId,  Budget budget) {
+    public Object updateBudget(Long userId, Long budgetId,  Long categoryId, Budget budget) {
+        Optional<Budget> modifBudget = budgetRepository.findByUserIdAndId(userId,budgetId);
+        Optional<Category> category=categoryRepository.findById(categoryId);
 
-                Optional<Budget> modifBudget = budgetRepository.findByUserIdAndId(userId,budgetId);
-        if(modifBudget.isPresent()){
-
-            modifBudget.get().setAmount(budget.getAmount());
-            modifBudget.get().setAlertAmount(budget.getAlertAmount());
+        if(modifBudget.isPresent() && category.isPresent()){
             modifBudget.get().setTitle(budget.getTitle());
-            modifBudget.get().setCategory(budget.getCategory());
+            modifBudget.get().setAmount(budget.getAmount());
+            // Ici, j'ai choisi que si on utilise le PUT, alors le reliquat sera réinitialisé à la valeur du montant de la dépense
+            modifBudget.get().setRemainder(budget.getAmount());
+            if(budget.getAlertAmount() <
+                    budget.getAmount()){
+                modifBudget.get().setAlertAmount(budget.getAlertAmount());
+            }
+            else{
+                return new ResponseEntity<>("Le montant d'alerte ne doit pas dépasser le montant du budget", HttpStatus.BAD_REQUEST);
+            }
+            if(category.isPresent()){
+                modifBudget.get().setCategory(category.get());
+            }
             return budgetRepository.save(modifBudget.get());
-    }else {
+        }
+        else {
             return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
         }
     }
 
     public Object patchBudget(Long userId, Long budgetId, Map<String,Object> budgetMap) {
         Optional<Budget> patchingBudget = budgetRepository.findByUserIdAndId(userId, budgetId);
-        if (patchingBudget.isPresent()) {
+
+        if (patchingBudget.isPresent()){
             if (budgetMap.containsKey("amount")) {
+                Double newAmont = (Double) budgetMap.get("amount");
+
+                // Ici, j'ai choisi que si on utilise le PATCH, alors le reliquat sera mis à jour en fonction de la nouvelle valeur du montant
+                Double oldAmount = patchingBudget.get().getAmount();
+                Double rectification = newAmont - oldAmount;
+                Double remainderAmount = patchingBudget.get().getRemainder()+rectification;
+                patchingBudget.get().setRemainder(remainderAmount);
+
                 patchingBudget.get().setAmount((Double) budgetMap.get("amount"));
             }
-
-                if (budgetMap.containsKey("alertAmount")) {
-                    patchingBudget.get().setAlertAmount((Long) budgetMap.get("alertAmount"));
-                }
-                if (budgetMap.containsKey("title")) {
-                    patchingBudget.get().setTitle((String) budgetMap.get("title"));
-                }
-                if (budgetMap.containsKey("category")) {
-                    patchingBudget.get().setCategory((Category) budgetMap.get("category"));
-
-                }
+            if (budgetMap.containsKey("alertAmount")) {
+                patchingBudget.get().setAlertAmount((Long) budgetMap.get("alertAmount"));
+            }
+            if (budgetMap.containsKey("title")) {
+                patchingBudget.get().setTitle((String) budgetMap.get("title"));
+            }
+            if (budgetMap.containsKey("category")) {
+                // Avec ça, il faut renseigner l'id de la nouvelle catégorie en utilisant une clé et une valeur, comme pour renseigner les autres attributs
+                Optional<Category> categoryOptional = categoryRepository.findById((Long) budgetMap.get("category"));
+                categoryOptional.ifPresent(category -> patchingBudget.get().setCategory(category));
+            }
             return budgetRepository.save(patchingBudget.get());
-            }else {
+        }
+        else {
             return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
         }
-
-        }
+    }
 
     public Object deleteBudget(Long userId, Long budgetId, Budget budget) {
         Optional<Budget> supprimBudget = budgetRepository.findByUserIdAndId(userId,budgetId);

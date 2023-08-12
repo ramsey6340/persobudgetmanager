@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @DynamicUpdate // permet de mettre à jour uniquement la partie modifier
@@ -33,6 +35,9 @@ public class Category {
 
     @Size(min = 1, max = 200, message = "{Size.category.description}")
     private String description;
+
+    @Column(name = "date_creation")
+    private LocalDate creationDate=LocalDate.now();
 
     @Column(name = "supprimer")
     @JsonIgnore
