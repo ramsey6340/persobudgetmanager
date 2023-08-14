@@ -4,7 +4,7 @@ import java.io.File;
 
 
 import com.group3.persobudgetmanager.models.EmailDetails;
-import com.group3.persobudgetmanager.repositories.EmailService;
+import com.group3.persobudgetmanager.repositories.EmailRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +19,14 @@ import org.springframework.stereotype.Service;
 @Service
 // Class
 // Implementing EmailService interface
-public class EmailServiceImpl implements EmailService {
+public class EmailRepositoryImpl implements EmailRepository {
 
-    @Autowired private JavaMailSender javaMailSender;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
-    @Value("cptbarbossa223.com") private String sender;
+    @Value("cptbarbossa223.com")
+    //@Value("gesbud.com")
+    private String sender;
 
     // Method 1
     // To send a simple email
