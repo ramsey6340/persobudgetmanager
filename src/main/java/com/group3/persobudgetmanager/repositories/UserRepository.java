@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByDeleteFalse();
 
     Optional<User> findByIdAndDeleteFalse(Long id);
+
+    Optional<User> findByLogin(String login);
 }

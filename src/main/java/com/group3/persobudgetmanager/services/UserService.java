@@ -1,5 +1,7 @@
 package com.group3.persobudgetmanager.services;
 import com.group3.persobudgetmanager.Exception.NotFoundException;
+import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.ResourceAlreadyExist;
 import com.group3.persobudgetmanager.models.User;
 import com.group3.persobudgetmanager.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,10 @@ public class UserService {
 
 
     public ResponseEntity<User> createUser(User user) {
+        Optional<User> userOptional = userRepository.findByLogin(user.getLogin());
+        if (userOptional.isPresent()) {
+            throw new ResourceAlreadyExist(ErrorMessage.alreadyExist);
+        }
         return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
     }
 
