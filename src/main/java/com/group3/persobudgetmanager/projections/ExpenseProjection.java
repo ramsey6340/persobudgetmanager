@@ -8,8 +8,6 @@ public interface ExpenseProjection {
     Double getAmount();
     String getDescription();
     LocalDate getCreationDate();
-    LocalDate getStartDate();
-    LocalDate getEndDate();
     String getUserId();
     Long getBudgetId();
     Long getPeriodId();

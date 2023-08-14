@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.http.ResponseEntity;
 
@@ -30,7 +27,7 @@ public class Notification {
     private String content="";
 
     @NotNull(message = "{NotNull.notification.date}")
-    private LocalDate date=LocalDate.now();
+    private LocalDate creationDate=LocalDate.now();
 
     @Column(name = "supprimer")
     @JsonIgnore

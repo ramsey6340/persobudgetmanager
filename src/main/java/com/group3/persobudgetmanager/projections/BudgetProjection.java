@@ -8,6 +8,8 @@ public interface BudgetProjection {
     String getTitle();
     Double getRemainder();
     LocalDate getCreationDate();
+    LocalDate getStartDate();
+    LocalDate getEndDate();
     Long getUserId();
     Long getCategoryId();
 }

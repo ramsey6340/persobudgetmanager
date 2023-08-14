@@ -50,15 +50,15 @@ public class BudgetController {
     }
 
     @Operation(summary = "Modifier un Budget")
-    @PutMapping("users/{userId}/budgets/{budgetId}")
-    public Object updateBudget(@PathVariable Long userId, @PathVariable Long budgetId,@RequestBody Budget budget){
-     return budgetService.updateBudget(userId,budgetId,budget);
+    @PutMapping(value = "users/{userId}/budgets/{budgetId}", params = "category")
+    public Object updateBudget(@PathVariable Long userId, @PathVariable Long budgetId,@RequestBody Budget budget, @RequestParam("category") Long categoryId){
+     return budgetService.updateBudget(userId,budgetId, categoryId, budget);
     }
 
     @Operation(summary = "Modifier un ou plus élément du budget")
-    @RequestMapping(value = "/users/{userId}/budgets/{budgetId}",method = RequestMethod.PATCH)
+    @RequestMapping(value = "/users/{userId}/budgets/{budgetId}", method = RequestMethod.PATCH)
     public Object patchBudget(@PathVariable Long userId, @PathVariable Long budgetId, @RequestBody Map<String,Object> budget){
-        return budgetService.patchBudget(userId,budgetId,budget);
+        return budgetService.patchBudget(userId, budgetId, budget);
     }
 
     @Operation(summary = "Supprimer le budget d'un utilisateur")

@@ -1,19 +1,12 @@
 package com.group3.persobudgetmanager.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-//import com.group3.persobudgetmanager.validators.annotations.ValidDate;
-//import com.group3.persobudgetmanager.validators.annotations.ValidDate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 
 @Entity
@@ -39,14 +32,6 @@ public class Expense {
 
     @Column(name = "date_creation")
     private LocalDate creationDate = LocalDate.now(); // La date de création de la dépense. Elle prend toujours la date à laquelle la dépense a été ajouté
-
-    @Column(name = "date_debut")
-    @NotNull(message = "{NotNull.expense.startDate}")
-    private String startDate;
-
-    @Column(name = "date_fin")
-    @NotNull(message = "{NotNull.expense.endDate}")
-    private String endDate;
 
     @Column(name = "supprimer")
     @JsonIgnore

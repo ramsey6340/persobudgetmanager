@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,9 @@ public class User {
     @NotNull(message = "{NotNull.user.password}")
     @Size(min = 4, message = "{Size.user.password}")
     private String password;
+
+    @Column(name = "date_creation")
+    private LocalDate creationDate=LocalDate.now();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true)
