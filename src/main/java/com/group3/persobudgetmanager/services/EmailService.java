@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 // Class
 // Implementing EmailService interface
-public class EmailService implements EmailRepository {
+public class EmailRepositoryImpl implements EmailRepository {
 
     @Autowired
     private JavaMailSender javaMailSender;
