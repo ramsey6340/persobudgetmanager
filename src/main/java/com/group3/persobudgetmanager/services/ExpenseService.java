@@ -1,5 +1,7 @@
 package com.group3.persobudgetmanager.services;
 
+import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.NotFoundException;
 import com.group3.persobudgetmanager.models.*;
 import com.group3.persobudgetmanager.projections.ExpenseProjection;
 import com.group3.persobudgetmanager.repositories.*;
@@ -122,7 +124,8 @@ public class ExpenseService {
             }
         }
         else{
-            return new ResponseEntity<>("La ressource demander est introuvable", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demander est introuvable", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -140,7 +143,8 @@ public class ExpenseService {
             budgetRepository.save(budget);
             return ResponseEntity.ok("Suppression réussi!");
         }else{
-            return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -151,7 +155,8 @@ public class ExpenseService {
         if (ExpenseOptional.isPresent()){
             return ResponseEntity.ok(ExpenseOptional.get());
         }else{
-            return new ResponseEntity<>("La ressource demanade est introuvable!", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demanade est introuvable!", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -192,7 +197,8 @@ public class ExpenseService {
 
             return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
         } else {
-            return new ResponseEntity("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -221,7 +227,8 @@ public class ExpenseService {
             budgetRepository.save(budget);
             return ResponseEntity.ok(expenseCreated);
         } else {
-            return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
     public List<Expense> search (Long userId, Double amount, String description, String
@@ -236,7 +243,8 @@ public class ExpenseService {
             expenseOptional.get().setDelete(false);
             return ResponseEntity.ok(expenseRepository.save(expenseOptional.get()));
         } else {
-            return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 }

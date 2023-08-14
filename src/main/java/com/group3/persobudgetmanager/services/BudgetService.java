@@ -1,5 +1,8 @@
 package com.group3.persobudgetmanager.services;
 
+import com.group3.persobudgetmanager.exceptions.ErrorMessage;
+import com.group3.persobudgetmanager.exceptions.NotFoundException;
+import com.group3.persobudgetmanager.exceptions.ResourceAlreadyExist;
 import com.group3.persobudgetmanager.models.Budget;
 import com.group3.persobudgetmanager.models.Category;
 import com.group3.persobudgetmanager.models.User;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.rmi.AlreadyBoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -71,7 +75,8 @@ public class BudgetService {
             Optional<Budget> budgetExist = budgetRepository.findAllByUserIdAndCategoryIdAndStartDateAndEndDate(
                     userId, categoryId, budget.getStartDate(), budget.getEndDate());
             if (budgetExist.isPresent()){
-                return new ResponseEntity<>("Un budget avec la même date et même catégorie existe déjà", HttpStatus.BAD_REQUEST);
+                //return new ResponseEntity<>("Un budget avec la même date et même catégorie existe déjà", HttpStatus.BAD_REQUEST);
+                throw new ResourceAlreadyExist(ErrorMessage.alreadyExist);
             }
 
             if (Tools.getNbDay(startDate, endDate) <=31){
@@ -96,7 +101,8 @@ public class BudgetService {
                 return new ResponseEntity<>("Le nombre de jours du budget ne doit pas dépasser 31", HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+        //return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+        throw new NotFoundException(ErrorMessage.notFound);
     }
 
     public List<BudgetProjection> getAllBudgets(Long userId) {
@@ -136,7 +142,8 @@ public class BudgetService {
             return budgetRepository.save(modifBudget.get());
         }
         else {
-            return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -169,7 +176,8 @@ public class BudgetService {
             return budgetRepository.save(patchingBudget.get());
         }
         else {
-            return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -181,7 +189,8 @@ public class BudgetService {
             budgetRepository.save(supprimBudget.get());
             return "Budget Supprimé avec succès";
         }else {
-            return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>("La ressource demandée est introuvable", HttpStatus.NOT_FOUND);
+            throw new NotFoundException(ErrorMessage.notFound);
         }
     }
 
@@ -212,7 +221,8 @@ public class BudgetService {
                 return new ResponseEntity<>("Le budget de destination est dépassé.\nChoisissez un budget avec un mois valide", HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+        //return new ResponseEntity<>("La ressource demandée est introuvable!", HttpStatus.NOT_FOUND);
+        throw new NotFoundException(ErrorMessage.notFound);
     }
 }
 
