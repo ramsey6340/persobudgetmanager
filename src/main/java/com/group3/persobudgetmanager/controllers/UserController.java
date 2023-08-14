@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @Operation(summary = "Retourne un utilisateur")
-    @GetMapping("users/{id}")
+    @GetMapping("users/{userId}")
     public Optional<User> getUser(@Valid @PathVariable Long id){
         return userService.getUser(id);
     }
@@ -44,13 +44,13 @@ public class UserController {
     }
 
     @Operation(summary = "Supprime un utilisateur")
-    @DeleteMapping("users/{id}")
+    @DeleteMapping("users/{userId}")
     public ResponseEntity<Object> delete(@Valid @PathVariable Long id){
         return userService.delete(id);
     }
 
     @Operation(summary = "Modifie un utilisateur")
-    @PatchMapping("users/{id}")
+    @PatchMapping("users/{userId}")
     public ResponseEntity<User> partialUpdateUser( @Valid @PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return userService.partialUpdateUser(id, updates);
     }
