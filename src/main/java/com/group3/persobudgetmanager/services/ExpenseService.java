@@ -30,7 +30,7 @@ public class ExpenseService {
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
-    EmailRepositoryImpl emailService;
+    EmailService emailService;
 
     //la méthode du service pour ajouter une nouvelle dépense
     public ResponseEntity<Object> save(Expense expense, Long userId, Long periodId, Long budgetId) {
